@@ -1843,10 +1843,10 @@ main{padding:14px clamp(16px,2.4vw,28px) 72px;gap:18px}
   <circle cx="574.97" cy="297.64" r="118.5"/>
 </svg>
     <h1 id="lgT">Back office</h1>
-    <label>Utilisateur<input name="u" autocomplete="username" required placeholder="Iman ou Norine"></label>
+    <label>Utilisateur<input name="u" autocomplete="username" required placeholder="Identifiant"></label>
     <label>Mot de passe<input name="p" type="password" autocomplete="current-password" required></label>
     <button class="go">Se connecter</button>
-    <p class="hint">Démo : aucun vrai mot de passe n'est vérifié. Écris « Iman » ou « Norine » et n'importe quel mot de passe.</p>
+    <p class="hint" id="lgErr" style="color:#B42318;display:none"></p>
   </form>
 </div>
 <div class="over" id="gate" role="dialog" aria-modal="true" aria-labelledby="gtT" hidden>
@@ -1914,7 +1914,7 @@ main{padding:14px clamp(16px,2.4vw,28px) 72px;gap:18px}
   </div>
 </nav>
 <div class="notice shellnote"><span><strong>Démo</strong> Données d'exemple : recharger la page remet tout à zéro.</span><span style="display:flex;gap:6px;align-items:center">Voir en tant que <button class="ghost" data-act="as" data-p="im" style="min-height:36px;padding:0 10px;border:1px solid #C9CDDB">Iman</button><button class="ghost" data-act="as" data-p="no" style="min-height:36px;padding:0 10px;border:1px solid #C9CDDB">Norine</button></span></div>
-<div class="finlock" id="finlock" hidden><h2>Espace finances</h2><p style="margin:0">Budget et Comptabilité sont protégés par un mot de passe (le même pour les deux), demandé à chaque ouverture.</p><form id="finF" style="display:flex;flex-direction:column;gap:10px"><label for="finP" style="font-weight:600">Mot de passe finances</label><input id="finP" type="password" required autocomplete="off"><button>Déverrouiller</button></form><p class="sub" style="margin:0;font-size:13px;color:#5B5B62">Démo : n'importe quel mot de passe fonctionne. Dès que tu quittes la page, elle se verrouille à nouveau.</p></div>
+<div class="finlock" id="finlock" hidden><h2>Espace finances</h2><p style="margin:0">Budget et Comptabilité sont protégés par un mot de passe, demandé à chaque ouverture.</p><form id="finF" style="display:flex;flex-direction:column;gap:10px"><label for="finP" style="font-weight:600">Mot de passe finances</label><input id="finP" type="password" required autocomplete="off"><button>Déverrouiller</button></form><p id="finErr" style="margin:0;font-size:13px;color:#B42318;display:none"></p><p class="sub" style="margin:0;font-size:13px;color:#5B5B62">La page se reverrouille à chaque fermeture.</p></div>
 <div id="pg-accueil" class="page" data-label="Accueil" hidden>
 <main>
   <section class="hero">
@@ -2165,9 +2165,12 @@ function openGate(sid,tok){const info=BO.shootName&&BO.shootName(sid,tok);docume
 $s("gtF").addEventListener("submit",e=>{e.preventDefault();const n=e.target.n.value.trim();if(!n||!gateArgs)return;if(!BO.enterGuest(gateArgs[0],gateArgs[1],n))return;guestOn=true;authed=false;finOk=false;document.body.classList.add("guest");document.body.classList.remove("out");$s("gate").hidden=true;
   $s("gname").innerHTML=`<span>${n.replace(/[<>&"]/g,"")}</span><button type="button" id="gquit">Quitter</button>`;$s("gquit").addEventListener("click",()=>{guestOn=false;document.body.classList.remove("guest");BO.leaveGuest&&BO.leaveGuest();history.replaceState(null,"",location.pathname);show()});
   history.replaceState(null,"","#marketing");show();window.scrollTo(0,0)});
-$s("lgF").addEventListener("submit",e=>{e.preventDefault();const u=e.target.u.value.trim().toLowerCase();authed=true;const who=u.startsWith("n")?"no":"im";document.dispatchEvent(new CustomEvent("bo-as",{detail:who}));e.target.reset();if(!location.hash||location.hash.startsWith("#invite"))history.replaceState(null,"","#accueil");show();window.scrollTo(0,0)});
+async function sha256(s){const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}
+const USERS={"imancandid":{who:"im",h:"7974e592e262274faaf4496b487fe7650c72d1b04211bbe5ac5698e27261edfd"},"norinecandid":{who:"no",h:"0d5f219a82e2e912088539cffe386389439026fc67f3eb70e7edfa8af8d416b5"}};
+const FIN_H="7fc1832f536ee6e755e57b2d23d4ed84058b46753009cf43ec643faeb8d2ec9c";
+$s("lgF").addEventListener("submit",async e=>{e.preventDefault();const u=e.target.u.value.trim().toLowerCase(),p=e.target.p.value,user=USERS[u],err=$s("lgErr");if(!user){err.textContent="Identifiant inconnu.";err.style.display="";return}const h=await sha256(p);if(h!==user.h){err.textContent="Mot de passe incorrect.";err.style.display="";return}err.style.display="none";authed=true;document.dispatchEvent(new CustomEvent("bo-as",{detail:user.who}));e.target.reset();if(!location.hash||location.hash.startsWith("#invite"))history.replaceState(null,"","#accueil");show();window.scrollTo(0,0)});
 $s("gtBack").addEventListener("click",()=>{history.replaceState(null,"",authed?"#marketing":"#accueil");show()});
-$s("finF").addEventListener("submit",e=>{e.preventDefault();if(!$s("finP").value)return;const h=location.hash.slice(1);finKey=h;$s("finP").value="";show()});
+$s("finF").addEventListener("submit",async e=>{e.preventDefault();const p=$s("finP").value,err=$s("finErr");if(!p)return;const h=await sha256(p);if(h!==FIN_H){err.textContent="Mot de passe incorrect.";err.style.display="";return}err.style.display="none";const pg=location.hash.slice(1);finKey=pg;$s("finP").value="";show()});
 
 $s("logout").addEventListener("click",()=>{authed=false;finOk=false;finKey=null;BO.setMenu(false);history.replaceState(null,"","#accueil");show()});
 window.addEventListener("hashchange",()=>{show();window.scrollTo(0,0)});
