@@ -1839,6 +1839,31 @@ main{padding:14px clamp(16px,2.4vw,28px) 72px;gap:18px}
 :is(#pg-accueil,#pg-todo,#pg-stock,#pg-packaging,#pg-marketing,#pg-budget,#pg-compta,#pg-idees) :is(.kpi,.stat){container-type:inline-size}
 :is(#pg-accueil,#pg-todo,#pg-stock,#pg-packaging,#pg-marketing,#pg-budget,#pg-compta,#pg-idees) :is(.kpi,.stat) .n{font-size:clamp(22px,14.5cqi,44px);letter-spacing:-.03em;max-width:100%}
 </style>
+<style>
+#pg-packaging .stp .use{display:flex;align-items:center;gap:10px;flex:1;min-height:40px;cursor:pointer}
+#pg-packaging .stp .use input{width:20px;height:20px;accent-color:var(--ink);flex:none}
+#pg-packaging .stp .qin{display:flex;align-items:center;gap:6px}
+#pg-packaging .stp .qin input{width:76px;min-height:38px;border:1px solid var(--line2);border-radius:8px;padding:0 8px;font-size:16px;text-align:right;background:var(--card)}
+#pg-packaging .stp .qin input:disabled{opacity:.35}
+@media(max-width:760px){
+  .over{grid-template-rows:auto}
+  .over .ph{display:none}
+  header.top{transition:transform .25s ease}
+  body.hdr-off header.top{transform:translateY(-100%)}
+  #pg-todo .cal{grid-template-columns:1fr;min-width:0}
+  #pg-todo .day{display:grid;grid-template-columns:64px minmax(0,1fr);gap:6px 10px;min-height:0;padding:8px 10px;align-items:start}
+  #pg-todo .day>.cond{grid-column:1;font-size:15px!important;line-height:1.2}
+  #pg-todo .day>.pill{grid-column:2}
+  #pg-marketing .mcal{grid-template-columns:repeat(7,minmax(0,1fr));min-width:0}
+  #pg-marketing .mh{padding:4px 2px;font-size:10px;text-align:center}
+  #pg-marketing .md{min-height:58px;padding:3px 2px;gap:2px;min-width:0}
+  #pg-marketing .mdn{font-size:11px;text-align:center}
+  #pg-marketing .dropt{display:block;width:fit-content;margin:1px auto 0;font-size:8px;padding:0 3px}
+  #pg-marketing .cp{padding:2px 3px;font-size:9.5px;gap:0;min-width:0}
+  #pg-marketing .cp .av{display:none}
+  #pg-marketing .cp span:first-child{word-break:break-word}
+}
+</style>
 </head>
 <body class="out">
 <div class="over" id="login" role="dialog" aria-modal="true" aria-labelledby="lgT">
@@ -2154,6 +2179,7 @@ const TODO_VIEWS=["tableau","kanban","calendrier"];const FIN=["budget","compta"]
 let authed=false,finOk=false,finKey=null,guestOn=false;
 const $s=id=>document.getElementById(id);
 document.addEventListener("visibilitychange",()=>{if(document.hidden)BOS.flush();else if(BOS.live)BOS.pull()});
+{let y0=0;const mq=matchMedia("(max-width:760px)");addEventListener("scroll",()=>{const y=scrollY,d=y-y0;if(Math.abs(d)<8)return;document.body.classList.toggle("hdr-off",mq.matches&&d>0&&y>60);y0=y},{passive:true})}
 const SB_URL="https://mxigxmqbxkfhuxfteaqj.supabase.co",SB_KEY="sb_publishable_5ynUZPUyaXFRJjl2RSO84A_ttaO9Ob6",CID=Math.random().toString(36).slice(2),sb=supabase.createClient(SB_URL,SB_KEY);
 window.BOS={warned:false,failed:false,live:false,subs:{},last:{},wait:{},get(k){try{return JSON.parse(localStorage.getItem("bo_"+k))}catch(e){return null}},local(k,j){try{localStorage.setItem("bo_"+k,j)}catch(e){if(!this.warned){this.warned=true;alert("Le stockage du navigateur est plein : les dernières modifications ne sont pas enregistrées. Supprime des pièces jointes ou des images.")}}},set(k,v){const j=JSON.stringify(v,(key,x)=>typeof x==="string"&&x.startsWith("blob:")?undefined:x);this.local(k,j);if(!this.live||this.last[k]===j)return;this.last[k]=j;clearTimeout(this.wait[k]);this.wait[k]=setTimeout(()=>this.push(k),700)},async push(k){const t=this.wait[k];const{error}=await sb.from("kv").upsert({key:k,value:this.last[k],src:CID,updated_at:new Date().toISOString()});if(this.wait[k]===t)delete this.wait[k];if(error)this.fail(error)},flush(){return Promise.all(Object.keys(this.wait).map(k=>{clearTimeout(this.wait[k]);return this.push(k)}))},fail(e){if(!this.failed){this.failed=true;alert("Synchronisation impossible : "+(e.message||e)+". Les modifications restent sur cet appareil.")}},apply(k,j){if(j==null||this.wait[k]||this.last[k]===j)return;let v;try{v=JSON.parse(j)}catch(e){return}this.last[k]=j;this.local(k,j);this.subs[k]&&this.subs[k](v)},on(k,f){this.subs[k]=f},async pull(){const{data,error}=await sb.from("kv").select("key,value");if(error)return this.fail(error);const have=new Set(data.map(r=>r.key));data.forEach(r=>this.apply(r.key,r.value));Object.keys(this.subs).forEach(k=>{const j=localStorage.getItem("bo_"+k);if(!have.has(k)&&j){this.last[k]=j;this.push(k)}})},start(){if(this.live)return;this.live=true;this.pull();this.ch=sb.channel("kv").on("postgres_changes",{event:"*",schema:"public",table:"kv"},p=>{const r=p.new||{};if(!r.key||r.src===CID)return;if(r.value==null)sb.from("kv").select("value").eq("key",r.key).single().then(({data})=>data&&this.apply(r.key,data.value));else this.apply(r.key,r.value)}).subscribe()},clear(){Object.keys(localStorage).filter(k=>k.startsWith("bo_")).forEach(k=>localStorage.removeItem(k))},file(f){return new Promise(r=>{const fr=new FileReader();fr.onerror=()=>r("");fr.onload=()=>{if(!/^image\/(png|jpe?g|webp)$/.test(f.type))return r(fr.result);const im=new Image();im.onerror=()=>r(fr.result);im.onload=()=>{const s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.8))};im.src=fr.result};fr.readAsDataURL(f)})},keep(list,raw,done){Promise.all(raw.map(f=>this.file(f))).then(r=>{r.forEach((d,i)=>{if(d&&list[i])list[i].data=d});done&&done()})},blob(d){const[h,b]=d.split(","),m=h.match(/:(.*?);/)[1],s=atob(b),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return URL.createObjectURL(new Blob([a],{type:m}))}};
 function show(){const h=location.hash.slice(1);
@@ -2789,16 +2815,20 @@ function typesHtml(cost){const n60=k=>HIST.filter(h=>h.kit===k&&days(h.date,iso(
 <label class="sr" for="pkg_ta-${k}">Ajouter une fourniture</label><select id="pkg_ta-${k}" data-tadd="${k}"><option value="">+ Ajouter une fourniture…</option>${SUP.filter(x=>!(x.id in u)).map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join("")}</select>
 <div class="tfoot"><span><strong>${chf(kitCost(u))}</strong> par colis</span><span class="sub">${n60(k)} colis envoyés sur 60 jours</span></div></section>`).join("")}
 <form class="panel tnew" data-form="newtype"><span class="cond" style="font-size:24px">Nouveau type</span><label class="sr" for="pkg_tnew">Nom du nouveau type</label><input id="pkg_tnew" placeholder="Ex. Sac à main, Grand colis…" required><label class="sr" for="pkg_tcopy">Partir de</label><select id="pkg_tcopy"><option value="">Vide</option>${Object.entries(KITS).map(([k,[n]])=>`<option value="${k}">Copier « ${esc(n)} »</option>`).join("")}</select><button class="btn cond">Créer le type</button></form></div>`}
+const readUsed=()=>{const u={};$("pkg_pF").querySelectorAll("input[data-uq]").forEach(i=>{const v=Math.max(0,+i.value||0);if(!i.disabled&&v)u[i.dataset.uq]=v});return u};
+function useChange(el){const F=$("pkg_pF"),id=el.dataset.use||el.dataset.uq,cb=F.querySelector(`[data-use="${id}"]`),n=F.querySelector(`[data-uq="${id}"]`);
+  if(el===cb){n.disabled=!cb.checked;n.value=cb.checked?(KITS[dlgItem.kit][1][id]||1):"";if(cb.checked)n.focus()}else{const v=Math.max(0,+n.value||0);cb.checked=v>0;n.disabled=!v;if(!v)n.value=""}
+  cb.closest(".stp").classList.toggle("on",cb.checked);dlgItem.used=readUsed();$("pkg_tot").textContent=chf(Object.entries(dlgItem.used).reduce((t,[k,q])=>t+q*SUP.find(s=>s.id===k).cost,0))}
 function parcelDlg(item,kit){
   kit=KITS[kit]?kit:Object.keys(KITS)[0];if(!kit){ptab="types";render();return}const used=Object.assign({},KITS[kit][1]);dlgItem={used,kit};
   const draw=()=>{const tot=Object.entries(dlgItem.used).reduce((t,[id,q])=>t+q*SUP.find(s=>s.id===id).cost,0);
     $("pkg_dlg").innerHTML=`<form class="dlg small" id="pkg_pF" role="dialog" aria-modal="true" aria-labelledby="pkg_pT"><div class="top"><span id="pkg_pT" class="cond" style="font-size:28px">Enregistrer un colis</span><button type="button" class="close" data-act="closedlg" aria-label="Fermer">X</button></div>
 <div class="fields"><label class="full"><span>Article envoyé</span><input name="item" required value="${esc(item||"")}" list="pkg_itl" placeholder="N° ou nom de l'article"><datalist id="pkg_itl">${TO_SHIP.concat(ON_SALE.map(o=>[o[0],o[1]])).map(t=>`<option value="${esc(t[0]+" "+t[1])}">`).join("")}</datalist></label>
 <div class="full"><span class="sub">Type de colis</span><div class="kitpick">${Object.entries(KITS).map(([k,[n]])=>`<button type="button" class="${dlgItem.kit===k?"on":""}" data-act="kit" data-k="${k}">${esc(n)}</button>`).join("")}</div></div>
-<div class="full"><span class="sub">Utilisé pour ce colis</span><div class="steps">${SUP.map(s=>{const q=dlgItem.used[s.id]||0,step=s.unit==="rouleau"?0.05:1;return`<div class="stp ${q?"on":""}"><span>${esc(s.name)}<span class="sub"> · reste ${qfmt(s,s.qty)}</span></span><span class="ctl"><button type="button" data-act="dec" data-id="${s.id}" data-s="${step}" aria-label="Moins de ${esc(s.name)}">−</button><span class="q">${qfmt(s,q)}</span><button type="button" data-act="inc" data-id="${s.id}" data-s="${step}" aria-label="Plus de ${esc(s.name)}">+</button></span></div>`}).join("")}</div></div>
+<div class="full"><span class="sub">Coche ce que tu as utilisé et indique la quantité</span><div class="steps">${SUP.map(s=>{const q=dlgItem.used[s.id]||0,step=s.unit==="rouleau"?0.05:1;return`<div class="stp ${q?"on":""}"><label class="use"><input type="checkbox" data-use="${s.id}"${q?" checked":""}>${esc(s.name)}</label><span class="qin"><input type="number" data-uq="${s.id}" min="0" step="${step}" inputmode="decimal" value="${q||""}"${q?"":" disabled"} aria-label="Quantité de ${esc(s.name)}"><span class="sub">${esc(s.unit)}</span></span></div>`}).join("")}</div></div>
 <label class="full chk"><input type="checkbox" name="ship" checked> Passer l'article en « Expédié » dans le Stock</label></div>
-<div class="foot"><span>Coût des fournitures : <strong>${chf(tot)}</strong></span><button class="btn cond">Enregistrer le colis</button></div></form>`;
-    $("pkg_pF").addEventListener("submit",ev=>{ev.preventDefault();const it=ev.target.item.value.trim();if(!it)return;Object.entries(dlgItem.used).forEach(([id,q])=>{const s=SUP.find(x=>x.id===id);s.qty=Math.max(0,Math.round((s.qty-q)*100)/100)});HIST.push({id:"h"+Date.now(),date:iso(new Date()),item:it,by:me,kit:dlgItem.kit,kname:KITS[dlgItem.kit][0],used:dlgItem.used});const i=TO_SHIP.findIndex(t=>it.startsWith(t[0]));if(i>=0&&ev.target.ship.checked)TO_SHIP.splice(i,1);$("pkg_dlg").hidden=true;render()})};
+<div class="foot"><span>Coût des fournitures : <strong id="pkg_tot">${chf(tot)}</strong></span><button class="btn cond">Enregistrer le colis</button></div></form>`;
+    $("pkg_pF").addEventListener("submit",ev=>{ev.preventDefault();const it=ev.target.item.value.trim();if(!it)return;dlgItem.used=readUsed();Object.entries(dlgItem.used).forEach(([id,q])=>{const s=SUP.find(x=>x.id===id);s.qty=Math.max(0,Math.round((s.qty-q)*100)/100)});HIST.push({id:"h"+Date.now(),date:iso(new Date()),item:it,by:me,kit:dlgItem.kit,kname:KITS[dlgItem.kit][0],used:dlgItem.used});const i=TO_SHIP.findIndex(t=>it.startsWith(t[0]));if(i>=0&&ev.target.ship.checked)TO_SHIP.splice(i,1);$("pkg_dlg").hidden=true;render()})};
   dlgItem.draw=draw;draw();$("pkg_dlg").hidden=false;$("pkg_dlg").querySelector("input").focus();
 }
 function recvDlg(id){const s=SUP.find(x=>x.id===id),f=forecast(s);
@@ -2825,8 +2855,8 @@ ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)r
   else if(a==="tinc"||a==="tdec"){const u=KITS[b.dataset.k][1],id=b.dataset.id,st=+b.dataset.s;u[id]=Math.max(0,Math.round(((u[id]||0)+(a==="tinc"?st:-st))*100)/100);if(!u[id])delete u[id];render();const nb=$("pkg_ptypes").querySelector(`[data-act="${a}"][data-k="${b.dataset.k}"][data-id="${id}"]`);nb&&nb.focus()}
   else if(a==="trm"){delete KITS[b.dataset.k][1][b.dataset.id];render()}
   else if(a==="kit"){const it=$("pkg_pF").item.value;dlgItem.kit=b.dataset.k;dlgItem.used=Object.assign({},KITS[b.dataset.k][1]);dlgItem.draw();$("pkg_pF").item.value=it}
-  else if(a==="inc"||a==="dec"){const it=$("pkg_pF").item.value,ship=$("pkg_pF").ship.checked;const id=b.dataset.id,st=+b.dataset.s;dlgItem.used[id]=Math.max(0,Math.round(((dlgItem.used[id]||0)+(a==="inc"?st:-st))*100)/100);if(!dlgItem.used[id])delete dlgItem.used[id];dlgItem.draw();$("pkg_pF").item.value=it;$("pkg_pF").ship.checked=ship;const nb=$("pkg_pF").querySelector(`[data-act="${a}"][data-id="${id}"]`);nb&&nb.focus()}});
-ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.tn){KITS[el.dataset.tn][0]=el.value.trim()||KITS[el.dataset.tn][0];render();return}if(el.dataset.td){KITS[el.dataset.td][2]=el.value;return}if(el.dataset.tadd){if(el.value){KITS[el.dataset.tadd][1][el.value]=1;render()}return}if(el.id==="pkg_safety"){safety=+el.value;render()}else if(el.dataset.d){const k=el.dataset.d;drop[k]=k==="date"?el.value:Math.max(0,+el.value||0);render()}});
+});
+ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.use||el.dataset.uq){useChange(el);return}if(el.dataset.tn){KITS[el.dataset.tn][0]=el.value.trim()||KITS[el.dataset.tn][0];render();return}if(el.dataset.td){KITS[el.dataset.td][2]=el.value;return}if(el.dataset.tadd){if(el.value){KITS[el.dataset.tadd][1][el.value]=1;render()}return}if(el.id==="pkg_safety"){safety=+el.value;render()}else if(el.dataset.d){const k=el.dataset.d;drop[k]=k==="date"?el.value:Math.max(0,+el.value||0);render()}});
 ROOT.addEventListener("submit",e=>{const f=e.target.closest('form[data-form="newtype"]');if(!f)return;e.preventDefault();const n=f.querySelector("input").value.trim();if(!n)return;const src=f.querySelector("select").value;const k="t"+Date.now();KITS[k]=[n,src&&KITS[src]?Object.assign({},KITS[src][1]):{},src&&KITS[src]?KITS[src][2]:""];render()});
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if(e.key==="Escape"){$("pkg_dlg").hidden=true;setMenu(false)}});
 $("pkg_dlg").addEventListener("mousedown",e=>{if(e.target===$("pkg_dlg"))$("pkg_dlg").hidden=true});
@@ -3657,7 +3687,7 @@ ${x.todo?'<span class="sub">Une tâche existe déjà dans la To do.</span>':`<bu
 <div class="cmts"><span class="lbl">Commentaires · ${x.comments.length}</span>${x.comments.map(c=>`<div class="cmt">${av(c.by,22)}<span>${esc(c.text)} <span class="sub">· ${fds(c.at)}</span></span></div>`).join("")}
 <form data-form="cmt" style="display:flex;gap:8px"><label class="sr" for="ide_icm">Commentaire</label><input id="ide_icm" placeholder="Réagir à l'idée…" style="flex:1"><button class="ghost">Envoyer</button></form></div>
 </div>
-<div class="foot"><span style="display:flex;gap:8px;flex-wrap:wrap">${x.state!=="go"?`<button class="btn cond" data-act="go">On le fait</button>`:`<button class="ghost" data-act="back">Remettre en idée</button>`}${x.state!=="parked"?`<button class="ghost" data-act="park">Mettre de côté</button>`:`<button class="ghost" data-act="back">Ressortir l'idée</button>`}</span><button class="like${x.likes.includes(me)?" on":""}" data-act="like" data-id="${x.id}" aria-pressed="${x.likes.includes(me)}">${x.likes.includes(me)?heart:heartO} ${x.likes.map(l=>members[l].name).join(", ")||"J'aime"}</button></div></div>`;
+<div class="foot"><span style="display:flex;gap:8px;flex-wrap:wrap">${x.state!=="go"?`<button class="btn cond" data-act="go">On le fait</button>`:`<button class="ghost" data-act="back">Remettre en idée</button>`}${x.state!=="parked"?`<button class="ghost" data-act="park">Mettre de côté</button>`:`<button class="ghost" data-act="back">Ressortir l'idée</button>`}<button class="ghost" data-act="idel" style="color:#B42318">Supprimer</button></span><button class="like${x.likes.includes(me)?" on":""}" data-act="like" data-id="${x.id}" aria-pressed="${x.likes.includes(me)}">${x.likes.includes(me)?heart:heartO} ${x.likes.map(l=>members[l].name).join(", ")||"J'aime"}</button></div></div>`;
   $("ide_dlg").hidden=false;
 }
 function newIdea(by){const x=I(by||me,"","autre","");x.date=iso(new Date());x.title="Nouvelle idée";IDEAS.unshift(x);openId=x.id;render();const t=$("ide_iT");if(t){t.focus();t.select()}}
@@ -3674,6 +3704,7 @@ ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)r
   else if(a==="close"){openId=null;$("ide_dlg").hidden=true}
   else if(a==="go"){x.state="go";x.owner=x.owner||x.by;x.prog="plan";render()}
   else if(a==="park"){x.state="parked";render()}
+  else if(a==="idel"){if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Confirmer la suppression";b.style.background="#B42318";b.style.color="#fff";return}IDEAS=IDEAS.filter(i=>i.id!==openId);openId=null;$("ide_dlg").hidden=true;render()}
   else if(a==="back"){x.state="idea";render()}
   else if(a==="totodo"){if(window.BO&&window.BO.addTask)window.BO.addTask({title:x.title,cat:"idees",owner:x.owner,prio:"",due:x.due||""});x.todo=true;render()}
 });
