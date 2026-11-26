@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Back office – Accueil</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -2147,6 +2148,9 @@ menu.addEventListener("click",e=>{if(e.target.closest("a"))BO.setMenu(false)});
 const TODO_VIEWS=["tableau","kanban","calendrier"];const FIN=["budget","compta"];
 let authed=false,finOk=false,finKey=null,guestOn=false;
 const $s=id=>document.getElementById(id);
+document.addEventListener("visibilitychange",()=>{if(document.hidden)BOS.flush();else if(BOS.live)BOS.pull()});
+const SB_URL="https://mxigxmqbxkfhuxfteaqj.supabase.co",SB_KEY="sb_publishable_5ynUZPUyaXFRJjl2RSO84A_ttaO9Ob6",CID=Math.random().toString(36).slice(2),sb=supabase.createClient(SB_URL,SB_KEY);
+window.BOS={warned:false,failed:false,live:false,subs:{},last:{},wait:{},get(k){try{return JSON.parse(localStorage.getItem("bo_"+k))}catch(e){return null}},local(k,j){try{localStorage.setItem("bo_"+k,j)}catch(e){if(!this.warned){this.warned=true;alert("Le stockage du navigateur est plein : les dernières modifications ne sont pas enregistrées. Supprime des pièces jointes ou des images.")}}},set(k,v){const j=JSON.stringify(v,(key,x)=>typeof x==="string"&&x.startsWith("blob:")?undefined:x);this.local(k,j);if(!this.live||this.last[k]===j)return;this.last[k]=j;clearTimeout(this.wait[k]);this.wait[k]=setTimeout(()=>this.push(k),700)},async push(k){const t=this.wait[k];const{error}=await sb.from("kv").upsert({key:k,value:this.last[k],src:CID,updated_at:new Date().toISOString()});if(this.wait[k]===t)delete this.wait[k];if(error)this.fail(error)},flush(){return Promise.all(Object.keys(this.wait).map(k=>{clearTimeout(this.wait[k]);return this.push(k)}))},fail(e){if(!this.failed){this.failed=true;alert("Synchronisation impossible : "+(e.message||e)+". Les modifications restent sur cet appareil.")}},apply(k,j){if(j==null||this.wait[k]||this.last[k]===j)return;let v;try{v=JSON.parse(j)}catch(e){return}this.last[k]=j;this.local(k,j);this.subs[k]&&this.subs[k](v)},on(k,f){this.subs[k]=f},async pull(){const{data,error}=await sb.from("kv").select("key,value");if(error)return this.fail(error);const have=new Set(data.map(r=>r.key));data.forEach(r=>this.apply(r.key,r.value));Object.keys(this.subs).forEach(k=>{const j=localStorage.getItem("bo_"+k);if(!have.has(k)&&j){this.last[k]=j;this.push(k)}})},start(){if(this.live)return;this.live=true;this.pull();this.ch=sb.channel("kv").on("postgres_changes",{event:"*",schema:"public",table:"kv"},p=>{const r=p.new||{};if(!r.key||r.src===CID)return;if(r.value==null)sb.from("kv").select("value").eq("key",r.key).single().then(({data})=>data&&this.apply(r.key,data.value));else this.apply(r.key,r.value)}).subscribe()},clear(){Object.keys(localStorage).filter(k=>k.startsWith("bo_")).forEach(k=>localStorage.removeItem(k))},file(f){return new Promise(r=>{const fr=new FileReader();fr.onerror=()=>r("");fr.onload=()=>{if(!/^image\/(png|jpe?g|webp)$/.test(f.type))return r(fr.result);const im=new Image();im.onerror=()=>r(fr.result);im.onload=()=>{const s=Math.min(1,1400/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.8))};im.src=fr.result};fr.readAsDataURL(f)})},keep(list,raw,done){Promise.all(raw.map(f=>this.file(f))).then(r=>{r.forEach((d,i)=>{if(d&&list[i])list[i].data=d});done&&done()})},blob(d){const[h,b]=d.split(","),m=h.match(/:(.*?);/)[1],s=atob(b),a=new Uint8Array(s.length);for(let i=0;i<s.length;i++)a[i]=s.charCodeAt(i);return URL.createObjectURL(new Blob([a],{type:m}))}};
 function show(){const h=location.hash.slice(1);
   const inv=h.match(/^invite-(s[\w]+)-(\w+)$/);
   if(inv){openGate(inv[1],inv[2]);return}
@@ -2166,13 +2170,15 @@ $s("gtF").addEventListener("submit",e=>{e.preventDefault();const n=e.target.n.va
   $s("gname").innerHTML=`<span>${n.replace(/[<>&"]/g,"")}</span><button type="button" id="gquit">Quitter</button>`;$s("gquit").addEventListener("click",()=>{guestOn=false;document.body.classList.remove("guest");BO.leaveGuest&&BO.leaveGuest();history.replaceState(null,"",location.pathname);show()});
   history.replaceState(null,"","#marketing");show();window.scrollTo(0,0)});
 async function sha256(s){try{const b=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(s));return Array.from(new Uint8Array(b)).map(x=>x.toString(16).padStart(2,"0")).join("")}catch(e){return null}}
-const USERS={"imancandid":{who:"im",h:"7974e592e262274faaf4496b487fe7650c72d1b04211bbe5ac5698e27261edfd"},"norinecandid":{who:"no",h:"0d5f219a82e2e912088539cffe386389439026fc67f3eb70e7edfa8af8d416b5"}};
+const USERS={imancandid:"im",norinecandid:"no"},EMAIL=u=>u+"@example.com";
 const FIN_H="7fc1832f536ee6e755e57b2d23d4ed84058b46753009cf43ec643faeb8d2ec9c";
-$s("lgF").addEventListener("submit",async e=>{e.preventDefault();const u=e.target.u.value.trim().toLowerCase(),p=e.target.p.value,user=USERS[u],err=$s("lgErr");if(!user){err.textContent="Identifiant inconnu.";err.style.display="";return}const h=await sha256(p);if(h===null){err.textContent="Ouvre le fichier depuis GitHub Pages pour que les mots de passe fonctionnent (HTTPS requis).";err.style.display="";return}if(h!==user.h){err.textContent="Mot de passe incorrect.";err.style.display="";return}err.style.display="none";authed=true;document.dispatchEvent(new CustomEvent("bo-as",{detail:user.who}));e.target.reset();if(!location.hash||location.hash.startsWith("#invite"))history.replaceState(null,"","#accueil");show();window.scrollTo(0,0)});
+function enter(who){authed=true;document.dispatchEvent(new CustomEvent("bo-as",{detail:who}));BOS.start();if(!location.hash||location.hash.startsWith("#invite"))history.replaceState(null,"","#accueil");show();window.scrollTo(0,0)}
+$s("lgF").addEventListener("submit",async e=>{e.preventDefault();const f=e.target,u=f.u.value.trim().toLowerCase(),who=USERS[u],err=$s("lgErr"),say=m=>{err.textContent=m;err.style.display=""};if(!who)return say("Identifiant inconnu.");const b=f.querySelector("button");b.disabled=true;const{error}=await sb.auth.signInWithPassword({email:EMAIL(u),password:f.p.value});b.disabled=false;if(error)return say(/invalid/i.test(error.message)?"Mot de passe incorrect.":"Connexion impossible : "+error.message);err.style.display="none";f.reset();enter(who)});
+sb.auth.getSession().then(({data})=>{const em=data.session&&data.session.user.email,u=em&&em.split("@")[0];if(USERS[u]&&!authed&&!guestOn&&!location.hash.startsWith("#invite"))enter(USERS[u])});
 $s("gtBack").addEventListener("click",()=>{history.replaceState(null,"",authed?"#marketing":"#accueil");show()});
 $s("finF").addEventListener("submit",async e=>{e.preventDefault();const p=$s("finP").value,err=$s("finErr");if(!p)return;const h=await sha256(p);if(h===null){err.textContent="Ouvre le fichier depuis GitHub Pages pour que les mots de passe fonctionnent (HTTPS requis).";err.style.display="";return}if(h!==FIN_H){err.textContent="Mot de passe incorrect.";err.style.display="";return}err.style.display="none";const pg=location.hash.slice(1);finKey=pg;$s("finP").value="";show()});
 
-$s("logout").addEventListener("click",()=>{authed=false;finOk=false;finKey=null;BO.setMenu(false);history.replaceState(null,"","#accueil");show()});
+$s("logout").addEventListener("click",async()=>{BO.setMenu(false);await BOS.flush();await sb.auth.signOut();BOS.clear();history.replaceState(null,"","#accueil");location.reload()});
 window.addEventListener("hashchange",()=>{show();window.scrollTo(0,0)});
 document.addEventListener("click",e=>{const b=e.target.closest('.shellnote [data-act="as"]');if(b)document.dispatchEvent(new CustomEvent("bo-as",{detail:b.dataset.p}))});
 document.addEventListener("keydown",e=>{if(e.key==="Escape")BO.setMenu(false)});
@@ -2193,12 +2199,12 @@ let me="im";
 const av=(id,s=26)=>`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 let drop={num:"02",name:"Drop hiver",date:D(9),time:"10:00"};
 let Q=[{t:"Valider les prix des 12 pièces",by:"no",done:false,at:3},{t:"Commander des cartes de remerciement",by:"im",done:false,at:2},{t:"Répondre aux messages Instagram",by:"im",done:false,at:1},{t:"Repasser la veste en cuir",by:"no",done:true,at:0}];
-let seq=10;
+let seq=10;const save=()=>BOS.set("home",{drop,Q,seq});
 function tick(){const el=$("hom_cd");if(!el)return;const target=new Date(drop.date+"T"+(drop.time||"00:00"));let s=Math.max(0,Math.floor((target-new Date())/1000));
   const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);s%=60;
   const live=target<=new Date();
   el.innerHTML=live?`<span class="live">C'est en ligne</span>`:[[d,"jours"],[h,"heures"],[m,"minutes"],[s,"secondes"]].map(([v,l])=>`<span class="cdb"><strong>${String(v).padStart(2,"0")}</strong><em>${l}</em></span>`).join("")}
-function render(){
+function render(){save();
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i,24)}${members[i].name}</span>`).join("");
@@ -2211,12 +2217,12 @@ function render(){
 const setMenu=o=>window.BO.setMenu(o);
 
 $("hom_qform").addEventListener("submit",e=>{e.preventDefault();const v=$("hom_qin").value.trim();if(!v)return;Q.push({t:v,by:me,done:false,at:++seq});$("hom_qin").value="";render()});
-ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.q){Q[+el.dataset.q].done=el.checked;render()}else if(el.dataset.d){drop[el.dataset.d]=el.value;tick()}});
-ROOT.addEventListener("input",e=>{const el=e.target;if(el.dataset.d==="num"||el.dataset.d==="name")drop[el.dataset.d]=el.value});
+ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.q){Q[+el.dataset.q].done=el.checked;render()}else if(el.dataset.d){drop[el.dataset.d]=el.value;tick();save()}});
+ROOT.addEventListener("input",e=>{const el=e.target;if(el.dataset.d==="num"||el.dataset.d==="name"){drop[el.dataset.d]=el.value;save()}});
 ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;if(b.dataset.act==="as"){me=b.dataset.p;render()}else if(b.dataset.act==="qdel"){Q.splice(+b.dataset.i,1);render()}});
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if(e.key==="Escape")setMenu(false)});
 setInterval(tick,1000);
-render();
+{const ld=s=>{({drop,Q,seq}=s)};const s=BOS.get("home");if(s)ld(s);BOS.on("home",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
@@ -2386,7 +2392,7 @@ function render(){
   $("me").innerHTML=me?`${av(me,32)}<span class="cond">${esc((nameOf(me)||"").split(" ")[0])}</span>`:"";
   $("team").innerHTML=memberIds().map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i,24)}${esc(nameOf(i))}</span>`).join("")||'<span class="sub">Personne pour l\'instant.</span>';
   $("tdo_who").innerHTML=`<button class="all${fPerson==="all"?" on":""}" data-act="who" data-p="all">Toutes</button>`+memberIds().map(i=>`<button class="${fPerson===i?"on":""}" data-act="who" data-p="${esc(i)}" aria-label="Tâches de ${esc(nameOf(i))}">${av(i,30)}</button>`).join("");
-  if(!loaded){$("tdo_stats").innerHTML="";$("tdo_view").innerHTML=`<div class="panel empty">Chargement…</div>`;return}
+  if(!loaded){$("tdo_stats").innerHTML="";$("tdo_view").innerHTML=`<div class="panel empty">Chargement…</div>`;return}BOS.set("todo",{tasks,members,notes,comments,names});
   $("tdo_stats").innerHTML=stats();
   if(detailId)renderDetail();
   $("tdo_view").innerHTML=view==="kanban"?kanbanView():view==="calendrier"?calView():tableView();
@@ -2483,7 +2489,7 @@ T("Créer le compte TikTok","marketing","im","done","",D(-12),{doneBy:"im",doneA
 T("Choisir le papier des étiquettes","admin","no","done","",D(-15),{doneBy:"no",doneAt:H(330)})];
 notes={no:{t1:"Photos des 8 premières pièces prêtes. Il manque les mesures de la veste en cuir et du pull Fendi avant de mettre en ligne."},im:{t2:"Vérifier ce qu'on écrit pour les clientes en France : droit de rétractation de 14 jours."}};
 comments=[{id:"c1",task:"t1",by:"im",text:"Je prends les mesures demain matin.",at:H(15)}];
-loaded=true;route();
+{const ld=s=>{({tasks,members,notes,comments,names}=s)};const s=BOS.get("todo");if(s)ld(s);BOS.on("todo",s=>{ld(s);render()})}loaded=true;route();
 
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
@@ -2584,7 +2590,7 @@ function gridView(L){
   return`<div class="scroll"><table class="grid"><thead><tr><th></th>${F.map(f=>`<th>${ic(f[2])}${esc(f[1])}</th>`).join("")}<th><button class="addcol" data-pop="newfield" aria-label="Ajouter une colonne">+</button></th></tr></thead><tbody>${body}</tbody><tfoot><tr><td></td>${foot}<td></td></tr></tfoot></table></div>`;
 }
 function galleryView(L){return`<div class="gallery">${L.map(a=>{const s=stOf(a.status),p=profit(a);return`<button class="gcard" data-act="open" data-id="${a.id}"><span class="pic">${pic(a,120)}${chip(s[1],s[2])}</span><span class="tx"><span class="sub">${esc(a.sku)} · ${esc(catOf(a.cat)[1])}</span><span style="font-weight:500">${esc(a.brand)} – ${esc(a.name)}</span><span style="display:flex;justify-content:space-between;align-items:center"><span>${chf(num(a.final)??num(a.intended))}${p.v!=null?` · <span class="sub">${p.est?"≈ ":""}+${chf(p.v)}</span>`:""}</span>${av(a.buyer,22)}</span></span></button>`}).join("")}</div>`}
-function render(skipDetail){
+function render(skipDetail){BOS.set("stock",{items,custom,hidden,CATS,seq});
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i,24)}${members[i].name}</span>`).join("");
@@ -2678,7 +2684,7 @@ ROOT.addEventListener("input",e=>{const el=e.target;if(el.dataset.f==="name"&&dr
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if(e.key==="Escape"){if(!$("stk_pop").hidden){closePop();return}if(openId||draft){openId=null;draft=null;renderDetail()}else setMenu(false)}
   const r=e.target.closest&&e.target.closest('tr[data-act="open"]');if(r&&(e.key==="Enter"||e.key===" ")&&e.target===r){e.preventDefault();draft=null;openId=r.dataset.id;renderDetail()}});
 $("stk_detail").addEventListener("mousedown",e=>{if(e.target===$("stk_detail")){openId=null;draft=null;renderDetail()}});
-render();
+{const ld=s=>{{({items,hidden,CATS,seq}=s);custom=s.custom.map(f=>Object.assign(f,{custom:true}))}};const s=BOS.get("stock");if(s)ld(s);BOS.on("stock",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
@@ -2735,7 +2741,7 @@ function forecast(s){
 function level(f){if(f.orderBy==null)return"ok";if(f.orderBy<=0)return"now";if(f.orderBy<=7)return"soon";return"ok"}
 const LV={now:["Commander maintenant","#FFD3CE","#B42318"],soon:["À commander bientôt","#FFE3A8","#8A5A00"],ok:["OK","#C7F0D8","#1E7A4C"]};
 const qfmt=(s,v)=>s.unit==="rouleau"?(Math.round(v*10)/10).toLocaleString("fr-CH"):Math.round(v).toLocaleString("fr-CH");
-function render(){
+function render(){BOS.set("pack",{SUP,KITS,HIST,drop,safety});
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
@@ -2819,7 +2825,7 @@ ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.tn){KITS[el.d
 ROOT.addEventListener("submit",e=>{const f=e.target.closest('form[data-form="newtype"]');if(!f)return;e.preventDefault();const n=f.querySelector("input").value.trim();if(!n)return;const src=f.querySelector("select").value;const k="t"+Date.now();KITS[k]=[n,src&&KITS[src]?Object.assign({},KITS[src][1]):{},src&&KITS[src]?KITS[src][2]:""];render()});
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if(e.key==="Escape"){$("pkg_dlg").hidden=true;setMenu(false)}});
 $("pkg_dlg").addEventListener("mousedown",e=>{if(e.target===$("pkg_dlg"))$("pkg_dlg").hidden=true});
-render();
+{const ld=s=>{({SUP,KITS,HIST,drop,safety}=s)};const s=BOS.get("pack");if(s)ld(s);BOS.on("pack",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
@@ -3035,7 +3041,7 @@ function ads(){
 <section class="panel"><div class="hrow"><h2 class="cond">Campagnes</h2><span class="sub">Meta Ads Manager · <em>exemple, à connecter</em></span></div><div class="scroll"><table class="tb"><thead><tr><th>Campagne</th><th>Objectif</th><th>Statut</th><th class="n">Budget</th><th class="n">Dépensé</th><th class="n">Affichages</th><th class="n">Clics</th><th class="n">Taux de clic</th><th class="n">Ventes</th><th class="n">Retour</th></tr></thead><tbody>${ADS.map(a=>`<tr><td style="font-weight:500">${esc(a.name)}</td><td>${esc(a.obj)}</td><td><span class="chip" style="background:${a.status==="Terminée"?"#ECECEF":"#BDE3FF"}">${a.status}</span></td><td class="n">${chf(a.budget)}</td><td class="n">${chf(a.spent)}</td><td class="n">${nf(a.imp)}</td><td class="n">${nf(a.clicks)}</td><td class="n">${a.imp?pct(a.clicks/a.imp*100):"—"}</td><td class="n">${a.ventes||"—"}</td><td class="n">${a.spent?(a.ca/a.spent).toFixed(1).replace(".",",")+" ×":"—"}</td></tr>`).join("")}</tbody></table></div>
 <p class="sub" style="margin:10px 0 0">Repère : un retour au-dessus de 1 × veut dire que la pub a rapporté plus qu'elle n'a coûté (avant le coût des pièces).</p></section>`;
 }
-function render(){
+function render(){BOS.set("mkt",{CONT,SHOOTS,MIDEAS,ADS,n});
   const mainEl=$("mkt_mtabs").closest("main");if(guest){mainEl.dataset.guest="1";tab="shoot";selS=guest.sid}else delete mainEl.dataset.guest;
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
@@ -3245,7 +3251,7 @@ ROOT.addEventListener("change",e=>{const el=e.target;
   if(el.dataset.mcap){S.mood[+el.dataset.mcap].cap=el.value;return}
   if(el.dataset.dir){S.direction=el.value;return}
   if(el.dataset.paladd){S.palette.push(el.value);render();return}
-  if(el.dataset.moodup){[...el.files].forEach(f=>S.mood.push({kind:"img",src:URL.createObjectURL(f),cap:f.name.replace(/\.[^.]+$/,"")}));render();return}});
+  if(el.dataset.moodup){const fs=[...el.files];Promise.all(fs.map(f=>BOS.file(f))).then(r=>{fs.forEach((f,i)=>{if(r[i])S.mood.push({kind:"img",src:r[i],cap:f.name.replace(/\.[^.]+$/,"")})});render()});return}});
 ROOT.addEventListener("submit",e=>{const f=e.target.closest("form[data-form]");if(!f)return;e.preventDefault();const inp=f.querySelector("input");const v=inp.value.trim();if(!v)return;
   if(f.dataset.form==="midea"){MIDEAS.push({id:"m"+Date.now(),by:f.dataset.by,title:v,fmt:f.querySelector("select").value,likes:[],state:"idea"});render();const n2=$("mi-"+f.dataset.by);n2&&n2.focus()}
   else if(f.dataset.form==="pshot"){const S=SHOOTS.find(x=>x.id===selS);S.slots[+f.dataset.i][4].push([v,f.querySelector("select").value,0]);render();const n2=$("mkt_mout").querySelector(`form[data-form="pshot"][data-i="${f.dataset.i}"] input`);n2&&n2.focus()}
@@ -3260,7 +3266,7 @@ ROOT.addEventListener("dragover",e=>{const z=e.target.closest("[data-drop],[data
 ROOT.addEventListener("dragleave",e=>{const z=e.target.closest("[data-drop],[data-dropst]");if(z)z.classList.remove("over")});
 ROOT.addEventListener("drop",e=>{const z=e.target.closest("[data-drop],[data-dropst]");if(!z||!dragId)return;e.preventDefault();const c=CONT.find(x=>x.id===dragId);if(z.dataset.drop)c.date=z.dataset.drop;else{c.status=z.dataset.dropst;if(c.status==="publie"&&!c.m)c.m={reach:0,views:0,likes:0,com:0,sh:0,sv:0,cl:0,ventes:0,fol:0}}dragId=null;render()});
 $("mkt_mdlg").addEventListener("mousedown",e=>{if(e.target===$("mkt_mdlg")||e.target.classList.contains("lbs")||e.target.classList.contains("lbf")){openC=null;openS=null;zoomI=null;closeSheet();$("mkt_mdlg").hidden=true}});
-render();
+{const ld=s=>{({CONT,SHOOTS,MIDEAS,ADS,n}=s)};const s=BOS.get("mkt");if(s)ld(s);BOS.on("mkt",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
@@ -3302,7 +3308,7 @@ function monthData(o){
   const revenue=sum(sold,a=>a.final);const spent=Object.values(act).reduce((t,v)=>t+(v||0),0);
   return{bought,sold,ex,act,revenue,spent}
 }
-function render(){
+function render(){BOS.set("budget",{budget,goals});
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
@@ -3361,7 +3367,7 @@ const saveB=el=>{budget[el.dataset.k]=Math.max(0,+el.value||0);editLine=null;ren
 const saveG=el=>{goals[el.dataset.g]=Math.max(0,+el.value||0);editGoal=null;render()};
 ROOT.addEventListener("focusout",e=>{if(e.target.id==="bud_bi")saveB(e.target);if(e.target.id==="bud_gi")saveG(e.target)});
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if((e.target.id==="bud_bi"||e.target.id==="bud_gi")&&e.key==="Enter"){e.preventDefault();e.target.blur()}if(e.key==="Escape"){setMenu(false);if(editLine||editGoal){editLine=null;editGoal=null;render()}}});
-render();
+{const ld=s=>{({budget,goals}=s)};const s=BOS.get("budget");if(s)ld(s);BOS.on("budget",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
@@ -3520,7 +3526,7 @@ function cloture(){
 <div class="scroll"><table class="tb"><thead><tr><th>Poste</th><th class="n">Total 2026</th></tr></thead><tbody>${recap().map(r=>`<tr><td>${r[0]}</td><td class="n ${r[1]>0?"pos":""}">${chf(r[1])}</td></tr>`).join("")}</tbody></table></div></section></div>`;
 }
 function recap(){return POSTES.map(p=>[p[1],J.filter(e=>e.poste===p[0]&&e.date.startsWith("2026")).reduce((t,e)=>t+e.amt,0)]).filter(r=>r[1])}
-function render(){
+function render(){BOS.set("compta",{J,BANK,closed:[...closed],IMMO,DETTES,CREANCES,n});
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
@@ -3542,7 +3548,7 @@ function newEntry(prefill){
   $("cpt_dlg").hidden=false;$("cpt_dlg").querySelector("input").focus();
   $("cpt_neF").addEventListener("submit",ev=>{ev.preventDefault();const f=ev.target;if(closed.has(f.date.value.slice(0,7))){f.date.setCustomValidity("Ce mois est clôturé");f.date.reportValidity();f.date.setCustomValidity("");return}
     const po=postOf(f.poste.value),amt=Math.abs(+f.amt.value)*(po[2]==="in"?1:-1);const e=E(f.date.value,f.label.value.trim(),f.poste.value,amt,f.moyen.value,f.by.value,"",!!f.file.files.length,false);
-    e.notes="";e.files=[...f.file.files].map(x=>({name:x.name,type:x.type,url:URL.createObjectURL(x)}));e.piece="P-2026-"+String(J.length+1).padStart(3,"0");J.push(e);if(p.bankId){e.bankId=p.bankId;e.bank=true}autoMatch();$("cpt_dlg").hidden=true;render()});
+    e.notes="";e.files=[...f.file.files].map(x=>({name:x.name,type:x.type,url:URL.createObjectURL(x)}));BOS.keep(e.files,[...f.file.files],render);e.piece="P-2026-"+String(J.length+1).padStart(3,"0");J.push(e);if(p.bankId){e.bankId=p.bankId;e.bank=true}autoMatch();$("cpt_dlg").hidden=true;render()});
 }
 const setMenu=o=>window.BO.setMenu(o);
 
@@ -3561,8 +3567,8 @@ ROOT.addEventListener("click",async e=>{const t=e.target.closest("[data-tab]");i
     const csv=rows.map(r=>r.map(c=>`"${String(c).replace(/"/g,'""')}"`).join(";")).join("\n");try{await navigator.clipboard.writeText(csv);$("cpt_copyMsg").textContent="Copié. Colle-le dans Excel ou un e-mail."}catch(err){$("cpt_copyMsg").textContent="La copie n'est pas autorisée ici : dans la vraie version, ce sera un fichier à télécharger."}}});
 ROOT.addEventListener("change",e=>{const el=e.target;
   if(el.dataset.f==="type"){fType=el.value;render()}else if(el.dataset.f==="month"){fMonth=el.value;render()}else if(el.dataset.f==="miss"){fMiss=el.checked;render()}else if(el.dataset.f==="sort"){fSort=el.value;render()}
-  else if(el.dataset.up){const x=J.find(j=>j.id===el.dataset.up);if(x&&el.files.length){x.files.push(...[...el.files].map(f=>({name:f.name,type:f.type,url:URL.createObjectURL(f)})));x.receipt=true;render()}}
-  else if(el.dataset.eup){const x=J.find(j=>j.id===openE);if(x&&el.files.length){x.files.push(...[...el.files].map(f=>({name:f.name,type:f.type,url:URL.createObjectURL(f)})));x.receipt=true;render();drawE()}}
+  else if(el.dataset.up){const x=J.find(j=>j.id===el.dataset.up);if(x&&el.files.length){const nf=[...el.files].map(f=>({name:f.name,type:f.type,url:URL.createObjectURL(f)}));x.files.push(...nf);BOS.keep(nf,[...el.files],render);x.receipt=true;render()}}
+  else if(el.dataset.eup){const x=J.find(j=>j.id===openE);if(x&&el.files.length){const nf=[...el.files].map(f=>({name:f.name,type:f.type,url:URL.createObjectURL(f)}));x.files.push(...nf);BOS.keep(nf,[...el.files],render);x.receipt=true;render();drawE()}}
   else if(el.dataset.ef){const x=J.find(j=>j.id===openE),k=el.dataset.ef;if(!x)return;if(k==="amt"){x.amt=Math.abs(+el.value||0)*(x.amt<0?-1:1)}else if(k==="poste"){x.poste=el.value;x.amt=Math.abs(x.amt)*(postOf(el.value)[2]==="in"?1:-1)}else if(k==="date"){if(closed.has(el.value.slice(0,7))){el.value=x.date;return}x.date=el.value}else x[k]=el.value;render();drawE()}
   else if(el.dataset.bl){const L={cre:CREANCES,immo:IMMO,det:DETTES}[el.dataset.bl];const x=L.find(i=>i.id===el.dataset.id);if(x){x[el.dataset.k]=el.dataset.k==="label"?el.value:+el.value||0;render()}}
   else if(el.dataset.match){const b=BANK.find(x=>x.id===el.dataset.match);if(el.value==="__new"){newEntry({label:b.label,date:b.date,amt:b.amt,moyen:"Banque",bankId:b.id})}else if(el.value){const x=J.find(j=>j.id===el.value);x.bankId=b.id;x.bank=true;render()}}
@@ -3571,7 +3577,7 @@ document.addEventListener("keydown",e=>{if(ROOT.hidden)return;const r=e.target.c
 ROOT.addEventListener("submit",e=>{const f=e.target.closest('form[data-form="bl"]');if(!f)return;e.preventDefault();const[i1,i2]=f.querySelectorAll("input");const l=i1.value.trim();if(!l)return;const v=+i2.value||0,k=f.dataset.kind;
   if(k==="immo")IMMO.push({id:"i"+Date.now(),label:l,date:iso(new Date()),cost:v,years:3});else({cre:CREANCES,det:DETTES})[k].push({id:k+Date.now(),label:l,amt:v,due:D(30)});render()});
 $("cpt_dlg").addEventListener("mousedown",e=>{if(e.target===$("cpt_dlg"))$("cpt_dlg").hidden=true});
-render();
+{const ld=s=>{{({J,BANK,IMMO,DETTES,CREANCES,n}=s);closed=new Set(s.closed);J.forEach(e=>(e.files||[]).forEach(f=>{if(f.data)f.url=BOS.blob(f.data)}))}};const s=BOS.get("compta");if(s)ld(s);BOS.on("compta",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
@@ -3616,7 +3622,7 @@ ${go?`<span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span
 <span class="ifoot"><span style="display:flex;align-items:center;gap:6px">${av(x.by,22)}<span class="sub">${go&&x.owner!==x.by?`idée de ${members[x.by].name} · portée par ${members[x.owner].name}`:fds(x.date)}</span></span>
 <span style="display:flex;align-items:center;gap:10px"><button class="like${liked?" on":""}" data-act="like" data-id="${x.id}" aria-pressed="${liked}" aria-label="${liked?"Retirer mon j'aime":"J'aime cette idée"}">${liked?heart:heartO}${x.likes.length||""}</button><span class="sub" aria-label="${x.comments.length} commentaires">${x.comments.length?x.comments.length+" comm.":""}</span></span></span></article>`}
 function list(){const s=q.toLowerCase();return IDEAS.filter(x=>(!fTag||x.tag===fTag)&&(!s||(x.title+" "+x.desc).toLowerCase().includes(s)))}
-function render(){
+function render(){BOS.set("ideas",{IDEAS,n});
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
@@ -3672,7 +3678,7 @@ ROOT.addEventListener("submit",e=>{const f=e.target.closest("form[data-form]");i
   if(f.dataset.form==="cmt")x.comments.push({by:me,text:v,at:iso(new Date())});else{let u=v;if(!/^https?:\/\//i.test(u))u="https://"+u;if(/^https:\/\//i.test(u))x.links.push({url:u,label:""})}
   render();const n2=$("ide_dlg").querySelector(`form[data-form="${f.dataset.form}"] input`);n2&&n2.focus()});
 $("ide_dlg").addEventListener("mousedown",e=>{if(e.target===$("ide_dlg")){openId=null;$("ide_dlg").hidden=true}});
-render();
+{const ld=s=>{({IDEAS,n}=s)};const s=BOS.get("ideas");if(s)ld(s);BOS.on("ideas",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
 }
