@@ -1845,8 +1845,11 @@ main{padding:14px clamp(16px,2.4vw,28px) 72px;gap:18px}
 #pg-packaging .stp .qin{display:flex;align-items:center;gap:6px}
 #pg-packaging .stp .qin input{width:76px;min-height:38px;border:1px solid var(--line2);border-radius:8px;padding:0 8px;font-size:16px;text-align:right;background:var(--card)}
 #pg-packaging .stp .qin input:disabled{opacity:.35}
+#pg-packaging #pkg_pF .stp label.use{flex-direction:row;align-items:center;justify-content:flex-start;text-align:left;text-transform:none;letter-spacing:normal;font-family:var(--fb);font-size:15px;font-weight:inherit;color:inherit;margin:0}
+.shellnote{display:none!important}
+body:has(.modal:not([hidden])) header.top{transform:translateY(-100%)}
 @media(max-width:760px){
-  .over{grid-template-rows:auto}
+  .over{grid-template-columns:1fr;grid-template-rows:auto}
   .over .ph{display:none}
   header.top{transition:transform .25s ease}
   body.hdr-off header.top{transform:translateY(-100%)}
