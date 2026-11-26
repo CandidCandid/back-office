@@ -1,0 +1,4 @@
+# Ignorer tout sauf le back office graphite
+*
+!.gitignore
+!Back_Office_Graphite.html
