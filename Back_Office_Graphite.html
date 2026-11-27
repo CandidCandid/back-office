@@ -1636,6 +1636,7 @@ nav.menu .brand{display:flex;align-items:center;gap:12px;padding:6px 8px 14px;bo
 nav.menu .brand svg{height:20px;width:auto;fill:#EDEDEA}
 nav.menu .brand span{display:flex;flex-direction:column;line-height:1.1;font-family:var(--fd);font-weight:650;font-size:17px;color:#F2F2EF;letter-spacing:-.02em}
 nav.menu .brand small{font-family:var(--fm);font-size:10.5px;font-weight:400;letter-spacing:.08em;text-transform:uppercase;color:#7E7E7A}
+nav.menu .brand small.socials{color:var(--acc);margin:3px 0 2px}
 nav.menu .glbl{font-family:var(--fm)!important;font-size:10.5px!important;font-weight:500!important;letter-spacing:.12em;text-transform:uppercase;color:#77776F;margin:0 8px 8px!important}
 nav.menu a{color:var(--railtx);font-weight:400;padding:8px 10px;border-radius:9px;display:flex;align-items:center;gap:12px;font-size:14.5px;transition:background .15s,color .15s}
 nav.menu a .k{font-family:var(--fm);font-size:10.5px;color:#66665F;width:18px}
@@ -1871,6 +1872,12 @@ body:has(.modal:not([hidden])) header.top{transform:translateY(-100%)}
 /* ---------- custom pages (page builder) ---------- */
 nav.menu .addpg{margin:8px 0 2px;width:100%;min-height:36px;border:1px dashed #44443F;border-radius:9px;background:transparent;color:var(--railtx);font-size:13px;text-align:left;padding:0 10px;cursor:pointer}
 nav.menu .addpg:hover{border-color:#77776F;color:#fff}
+#pg-stock .skug{border:1px solid #C9CDDB;background:#fff;color:#151515;border-radius:7px;font-size:12px;padding:2px 8px;cursor:pointer;line-height:1.4}#pg-stock .skug:hover{border-color:#151515}
+nav.menu .cpgi{position:relative}nav.menu .cpgi a{padding-right:34px}
+nav.menu .pgx{position:absolute;right:4px;top:50%;transform:translateY(-50%);min-width:26px;height:26px;padding:0 6px;border:0;border-radius:7px;background:transparent;color:#8A8A82;font-size:16px;line-height:1;cursor:pointer;opacity:0;transition:opacity .15s,background .15s,color .15s}
+nav.menu .cpgi:hover .pgx,nav.menu .pgx:focus-visible,nav.menu .pgx.arm{opacity:1}nav.menu .pgx:hover{background:#3A3A3B;color:#fff}
+nav.menu .pgx.arm{background:#B42318;color:#fff;font-size:12px;font-weight:500}nav.menu .cpgi:has(.pgx.arm) a.on::after{display:none}
+@media (hover:none){nav.menu .pgx{opacity:1}}
 .cpg .panel,.cpg .kpi{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--sh);padding:18px 20px}
 .cpg .phead{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px}
 .cpg h1{margin:0;font-family:var(--fd);font-weight:700;letter-spacing:-.04em;font-size:clamp(34px,3.6vw,50px);line-height:1}
@@ -2132,7 +2139,7 @@ nav.menu .addpg:hover{border-color:#77776F;color:#fff}
 </header>
 <nav class="menu" id="menu" aria-label="Navigation" hidden>
   <button class="x cond" id="menuX" aria-label="Fermer le menu">Fermer ✕</button>
-  <div class="brand"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="146.42 177.14 549.05 241.00"><circle cx="266.92" cy="297.64" r="118.5"/><circle cx="574.97" cy="297.64" r="118.5"/></svg><span>Candid<small>Back office · v07</small></span></div>
+  <div class="brand"><svg aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="146.42 177.14 549.05 241.00"><circle cx="266.92" cy="297.64" r="118.5"/><circle cx="574.97" cy="297.64" r="118.5"/></svg><span>Candid<small class="socials">Instagram · TikTok</small><small>Back office · v07</small></span></div>
   <div>
     <div class="cond glbl">Espace</div>
     <a href="#accueil" data-page="accueil"><span class="k">01</span><span class="t">Accueil</span></a>
@@ -2850,7 +2857,7 @@ function list(){const s=q.toLowerCase();let L=items.filter(a=>inView(a,view)&&(!
   const [k,dir]=sortBy,m=dir==="asc"?1:-1;return L.sort((a,b)=>{let x=val(a,k),y=val(b,k);if(x===""||x==null)return 1;if(y===""||y==null)return -1;if(typeof x==="number"||(!isNaN(+x)&&!isNaN(+y)&&x!==""&&!/-/.test(x)))return(+x-+y)*m;return String(x).localeCompare(String(y))*m})}
 function cell(a,f){const k=f[0],t=f[2],v=f.custom?a.x[k]:a[k];
   if(k==="photo")return`<td><span class="thumb">${pic(a,32)}</span></td>`;
-  if(k==="sku")return`<td class="sub">${a.sku?esc(a.sku):'<span style="color:#B42318">à renseigner</span>'}</td>`;
+  if(k==="sku")return`<td class="sub">${a.sku?esc(a.sku):`<button type="button" class="skug" data-act="gensku" data-id="${a.id}" title="Attribuer le prochain numéro libre">Générer</button>`}</td>`;
   if(t==="pay")return`<td>${v==="Revolut"?'<span class="chip" style="background:#E6ECFF">Revolut</span>':esc(v||"—")}</td>`;
   if(k==="name")return`<td style="font-weight:500">${esc(a.name)}</td>`;
   if(t==="cat"){const c=catOf(v);return`<td>${chip(c[1],c[2]+"33")}</td>`}
@@ -2919,7 +2926,7 @@ function renderDetail(){
 <div class="top"><div style="display:flex;flex-direction:column;gap:6px"><span class="sub">${isNew?"Nouvel article":(a.sku?"SKU "+esc(a.sku):"SKU à renseigner")+(a.archived?" · Archivé":"")}</span><span id="stk_dT" class="cond" style="font-size:32px;line-height:1.05">${esc(a.name||"Sans nom")}</span><span style="display:flex;gap:6px;flex-wrap:wrap">${c?chip(c[1],c[2]+"33"):'<span class="chip" style="background:#FFE1DC">Catégorie à choisir</span>'}${chip(s[1],s[2])}</span></div><button class="close" data-act="close" aria-label="Fermer">X</button></div>
 <div class="body"><div class="pic">${pic(a,180)}<label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#5B5B62">Couleur de la pièce <input type="color" data-f="color" value="${esc(a.color||"#D8D8DE")}" style="width:44px;height:32px;border:1px solid #C9CDDB;padding:0;background:#fff"></label>
 <div class="pbox"><span class="sub">${p.est?"Profit estimé":"Profit"}</span><span id="stk_pv" class="cond" style="font-size:34px;${p.v!=null&&p.v<0?"color:#B42318":""}">${p.v==null?"—":(p.est?"≈ ":"")+chf(p.v)}</span><span class="sub">Prix de vente ${p.est?"prévu":"final"} − prix payé − port − emballage</span></div></div>
-<div class="fields">${F.map(f=>`<label class="${f[2]==="long"?"full":""}" for="stk_f-${f[0]}"><span>${esc(f[1])}${f[0]==="cat"?' <span class="req">* obligatoire</span>':""}${f[0]==="sku"?' <span class="sub">· à reprendre de Shopify</span>':""}</span>${inputFor(a,f)}</label>`).join("")}
+<div class="fields">${F.map(f=>`<label class="${f[2]==="long"?"full":""}" for="stk_f-${f[0]}"><span>${esc(f[1])}${f[0]==="cat"?' <span class="req">* obligatoire</span>':""}${f[0]==="sku"?skuHint(a):""}</span>${inputFor(a,f)}</label>`).join("")}
 ${isNew?"":`<div class="hist"><strong style="color:#151515">Historique</strong>${a.log.map(l=>`<span>${esc(l)}</span>`).join("")}</div>`}</div></div>
 <div class="foot">${isNew?`<span class="sub">${a.cat&&a.name?"Prêt à être ajouté.":"Un nom et une catégorie sont nécessaires pour ajouter l'article."}</span><span style="display:flex;gap:8px"><button class="ghost" data-act="close">Annuler</button><button class="btn cond" data-act="create"${a.cat&&a.name?"":' disabled style="opacity:.4;cursor:not-allowed"'}>Ajouter au stock</button></span>`
 :`<span class="sub">${a.archived?"Archivé : l'article reste consultable dans la vue Archive.":ARCHIVABLE.includes(a.status)?"Rien n'est supprimé : archivé, l'article reste consultable.":"Un article peut être archivé une fois livré ou perdu."}</span>${a.archived?`<button class="ghost" data-act="unarch">Sortir de l'archive</button>`:ARCHIVABLE.includes(a.status)?`<button class="btn cond" data-act="arch">Archiver</button>`:""}<button class="ghost" data-act="idel" style="color:#B42318">Supprimer (erreur de saisie)</button>`}</div></div>`;
@@ -2930,7 +2937,12 @@ function setField(a,k,v,isC){const f=allFields().find(x=>x[0]===k);const t=f?f[2
   if(!draft){if(k==="status"){a.log.push(`${members[me].name} : « ${stOf(old)[1]} » → « ${stOf(v)[1]} » le ${fmt(iso(new Date()))}`);if(v==="recu"&&!a.received)a.received=iso(new Date())}
     else if(k==="cat")a.log.push(`${members[me].name} : catégorie changée en « ${catOf(v)[1]} »`);
     else if(k==="final"&&v!=="")a.log.push(`${members[me].name} : prix de vente final ${chf(v)}`)}}
-function newDraft(){const n=seq+1;draft=A({id:"a"+n,sku:"",cat:flt.cat.length===1?flt.cat[0]:"",buyer:me,ordered:iso(new Date())});seq=n-1;openId=null;renderDetail();const fn=$("stk_f-name");fn&&fn.focus()}
+const skuN=v=>{const m=/^#?\s*0*(\d{1,7})$/.exec(String(v||"").trim());return m?+m[1]:0};
+function nextSku(){const n=items.reduce((m,i)=>Math.max(m,skuN(i.sku)),0)+1;return"#"+String(n).padStart(4,"0")}
+function skuHint(a){const t=(a.sku||"").trim().toLowerCase(),d=t&&items.find(i=>i!==a&&(i.sku||"").trim().toLowerCase()===t);
+  return d?` <span class="req">· déjà utilisé par « ${esc(d.name||"Sans nom")} »</span> <button type="button" class="skug" data-act="gensku">Nouveau numéro</button>`
+  :a.sku?' <span class="sub" title="Numéro attribué automatiquement. Tu peux le modifier.">· auto</span>':' <button type="button" class="skug" data-act="gensku">Générer</button>'}
+function newDraft(){const n=seq+1;draft=A({id:"a"+n,sku:nextSku(),cat:flt.cat.length===1?flt.cat[0]:"",buyer:me,ordered:iso(new Date())});seq=n-1;openId=null;renderDetail();const fn=$("stk_f-name");fn&&fn.focus()}
 const setMenu=o=>window.BO.setMenu(o);
 
 $("stk_q").addEventListener("input",e=>{q=e.target.value;render()});
@@ -2948,7 +2960,8 @@ ROOT.addEventListener("click",e=>{
   else if(a==="open"){draft=null;openId=b.dataset.id;renderDetail()}
   else if(a==="close"){openId=null;draft=null;renderDetail()}
   else if(a==="new"){newDraft()}
-  else if(a==="create"){if(!draft.cat||!draft.name)return;seq++;draft.id="stk_a"+seq;draft.log=[`Ajouté par ${members[me].name} le ${fmt(iso(new Date()))}`];items.unshift(draft);const id=draft.id;draft=null;openId=id;render()}
+  else if(a==="gensku"){e.preventDefault();const x=b.dataset.id?items.find(i=>i.id===b.dataset.id):draft||items.find(i=>i.id===openId);if(!x)return;x.sku=nextSku();if(!draft||x!==draft)x.log.push(`${members[me].name} : SKU ${x.sku} généré le ${fmt(iso(new Date()))}`);if(b.dataset.id)render(true);else render()}
+  else if(a==="create"){if(!draft.cat||!draft.name)return;if(skuN(draft.sku)&&items.some(i=>(i.sku||"").trim().toLowerCase()===draft.sku.trim().toLowerCase()))draft.sku=nextSku();seq++;draft.id="stk_a"+seq;draft.log=[`Ajouté par ${members[me].name} le ${fmt(iso(new Date()))}`];items.unshift(draft);const id=draft.id;draft=null;openId=id;render()}
   else if(a==="idel"){if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Confirmer la suppression définitive";b.style.background="#B42318";b.style.color="#fff";return}items=items.filter(i=>i.id!==openId);openId=null;renderDetail();render()}
   else if(a==="arch"){const x=items.find(i=>i.id===openId);x.archived=true;x.log.push(`Archivé par ${members[me].name} le ${fmt(iso(new Date()))}`);render()}
   else if(a==="unarch"){const x=items.find(i=>i.id===openId);x.archived=false;x.log.push(`Sorti de l'archive par ${members[me].name} le ${fmt(iso(new Date()))}`);render()}
@@ -2962,7 +2975,7 @@ ROOT.addEventListener("change",e=>{const el=e.target;
   if(el.dataset.act==="hide"){hidden[el.value]=!el.checked;render();return}
   if(el.dataset.act==="sortk"){sortBy=[el.value,sortBy[1]];render();return}
   if(el.dataset.f){const x=draft||items.find(i=>i.id===openId);if(!x)return;setField(x,el.dataset.f,el.type==="checkbox"?el.checked:el.value,!!el.dataset.c);
-    if(el.tagName==="SELECT"||el.type==="color"){render();return}
+    if(el.tagName==="SELECT"||el.type==="color"||el.dataset.f==="sku"){render();return}
     render(true);if(el.dataset.f==="name"){const t=$("stk_dT");t&&(t.textContent=x.name||"Sans nom")}
     const pv=$("stk_pv");if(pv){const p=profit(x);pv.textContent=p.v==null?"—":(p.est?"≈ ":"")+chf(p.v);pv.style.color=p.v!=null&&p.v<0?"#B42318":""}}});
 ROOT.addEventListener("input",e=>{const el=e.target;if(el.dataset.f==="name"&&draft){draft.name=el.value;const c=$("stk_detail").querySelector('[data-act="create"]');if(c){const ok=draft.cat&&draft.name;c.disabled=!ok;c.style.opacity=ok?"":".4";c.style.cursor=ok?"":"not-allowed"}}});
@@ -4212,7 +4225,7 @@ function mount(id){const el=document.createElement("div");el.id="pg-"+id;el.clas
   BOS.on("pg_"+id,v=>{D[id]=Object.assign(blank(),v||{});soft(id);BO.link.changed("pg")})}
 function sync(){const ids=new Set(PAGES.map(p=>p.id));
   for(const id in roots)if(!ids.has(id)){roots[id].remove();delete roots[id]}
-  NAV.innerHTML=PAGES.map((p,i)=>`<a href="#${p.id}" data-page="${p.id}"><span class="k">${String(BASE+i+1).padStart(2,"0")}</span><span class="t">${esc(p.name)}</span></a>`).join("");
+  NAV.innerHTML=PAGES.map((p,i)=>`<div class="cpgi"><a href="#${p.id}" data-page="${p.id}"><span class="k">${String(BASE+i+1).padStart(2,"0")}</span><span class="t">${esc(p.name)}</span></a><button type="button" class="pgx" data-pgdel="${p.id}" title="Supprimer la page" aria-label="Supprimer la page ${esc(p.name)}">×</button></div>`).join("");
   PAGES.forEach(p=>{if(!roots[p.id])mount(p.id);roots[p.id].dataset.label=p.name;const i=BO.FIN.indexOf(p.id);if(p.lock&&i<0)BO.FIN.push(p.id);else if(!p.lock&&i>=0)BO.FIN.splice(i,1);renderPage(p.id)})}
 
 /* ---------- wizard ---------- */
@@ -4268,7 +4281,11 @@ function finishW(){const fs=W.fields,ids=new Set(fs.map(f=>f.id)),K=new Set(kpiO
   if(!P.views.length)P.views=["table"];
   const i=PAGES.findIndex(p=>p.id===P.id);if(i>=0)PAGES[i]=P;else PAGES.push(P);
   savePages();closeW();sync();if(location.hash==="#"+P.id)BO.show();else location.hash=P.id}
-function deletePage(id){PAGES=PAGES.filter(p=>p.id!==id);savePages();delete D[id];BOS.set("pg_"+id,null);closeW();sync();location.hash="accueil"}
+function deletePage(id){PAGES=PAGES.filter(p=>p.id!==id);savePages();delete D[id];BOS.set("pg_"+id,null);closeW();sync();if(location.hash==="#"+id)location.hash="accueil";else BO.show()}
+NAV.addEventListener("click",e=>{const b=e.target.closest("[data-pgdel]");if(!b)return;e.preventDefault();const id=b.dataset.pgdel,p=PAGES.find(x=>x.id===id);if(!p)return;
+  if(p.lock&&roots[id]&&roots[id].hidden){location.hash=id;return}
+  if(!b.classList.contains("arm")){b.classList.add("arm");b.textContent="Supprimer ?";b.title="Clique encore pour supprimer la page et tout son contenu";clearTimeout(b._t);b._t=setTimeout(()=>{if(b.isConnected){b.classList.remove("arm");b.textContent="×";b.title="Supprimer la page"}},3500);return}
+  deletePage(id)});
 WZ.addEventListener("click",e=>{const t=e.target;
   if(t.closest("[data-wc]"))return closeW();
   const tp=t.closest("[data-tpl]");if(tp){W=fromTpl(tp.dataset.tpl);wi=1;wErr="";drawW();focusW();return}
