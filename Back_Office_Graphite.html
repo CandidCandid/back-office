@@ -2666,6 +2666,27 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
 #pg-bureau .bdf{display:flex;justify-content:space-between;align-items:center;padding:12px 18px 18px}
 @media(max-width:760px){#pg-bureau .bkpis,#pg-bureau .btwo,#pg-bureau .bdb{grid-template-columns:1fr}#pg-bureau .btabs .bnew{margin-left:0}#pg-bureau .bch label>span{white-space:normal}}
 #pg-bureau .btb td.n,#pg-bureau .btb td:first-child{white-space:nowrap}
+
+#pg-budget .bman{margin-top:22px;padding-top:16px;border-top:1.5px solid #111}
+#pg-budget .bman h3{font-size:22px;margin:0}
+#pg-budget .bmf{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;margin:10px 0 6px}
+#pg-budget .bmf label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mute)}
+#pg-budget .bmf .bml{flex:1 1 220px}
+#pg-budget .bmf input,#pg-budget .bmf select{border:1.5px solid #111;background:#fff;min-height:44px;padding:0 10px;font:inherit;font-size:15px;color:#111;border-radius:0}
+#pg-budget .bmf .amtc input{width:110px}
+#pg-budget .bmf .btn{min-height:44px}
+#pg-budget .bmt tr.past td{color:var(--mute)}
+@media(max-width:600px){#pg-budget .bmf>label,#pg-budget .bmf .btn{flex:1 1 100%}#pg-budget .bmf .amtc input{flex:1;width:auto}}
+
+#tdo_colorModal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:300;padding:16px}
+#tdo_colorModal[hidden]{display:none}
+#tdo_colorModal .box{background:#F2F1EC;color:#111;border:1.5px solid #111;padding:26px;max-width:420px;width:100%;display:flex;flex-direction:column;gap:14px}
+#tdo_colorModal .swatches{display:flex;flex-wrap:wrap;gap:10px}
+#tdo_colorModal .swatches button{width:44px;height:44px;border-radius:50%;border:3px solid transparent;cursor:pointer;padding:0}
+#tdo_colorModal .swatches button.on{border-color:#111;box-shadow:inset 0 0 0 3px #F2F1EC}
+#tdo_colorModal .swatches button:disabled{opacity:.25;cursor:not-allowed}
+#tdo_colorModal .btn{border:0;background:#111;color:#fff;border-radius:999px;min-height:46px;padding:0 22px;font:inherit;font-size:16px;cursor:pointer;align-self:flex-start}
+#tdo_colorModal .btn:hover{background:var(--pink);color:#111}
 </style>
 </head>
 <body class="out">
@@ -2818,7 +2839,7 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
   <path d="M665.95,502.52c-9.67,0-17.82-6.04-24.46-18.13-6.65-12.08-11.61-28.49-14.88-49.24-3.28-20.74-4.92-44-4.92-69.79,0-33.43,2.67-62.13,8.03-86.1,5.35-23.96,12.55-42.39,21.61-55.28,9.06-12.89,19.03-19.33,29.9-19.33,4.14,0,8.24,1.21,12.3,3.62,4.05,2.42,7.98,6.04,11.78,10.88h1.04v-79.15c0-13.29-.65-21.95-1.94-25.98-1.29-4.02-4.45-6.04-9.45-6.04-1.21,0-3.46.41-6.73,1.21v-16.92l32.62-21.15h6.99v361.91c0,15.71.95,25.89,2.85,30.51,1.9,4.63,5.26,6.95,10.1,6.95h5.44v16.31l-33.13,13.9h-5.95v-41.69h-1.04c-4.83,10.07-10.57,19.84-17.21,29.3-6.65,9.46-14.28,14.2-22.91,14.2ZM678.12,459.02c6.04,0,11.13-1.91,15.27-5.74,4.14-3.82,8.45-9.37,12.94-16.62v-159.51c-1.04-12.48-3.54-23.66-7.51-33.53-3.97-9.87-10.01-14.8-18.12-14.8-10.87,0-19.67,9.27-26.4,27.79-6.73,18.53-10.1,46.93-10.1,85.19,0,41.49,2.89,71.4,8.67,89.72,5.78,18.33,14.19,27.49,25.24,27.49Z" fill="#231f20" opacity=".98"/>
 </svg>
     <div class="cond" id="tdo_cmT" style="font-size:30px">Choisis ta couleur</div>
-    <p style="margin:0">Choisis ta couleur. Elle surligne tes tâches, ta note et ce que tu coches.</p>
+    <p style="margin:0">Elle s'affiche partout dans le back office : ton avatar, tes tâches, tes notes et ce que tu coches.</p>
     <div class="swatches" id="tdo_swatches"></div>
     <button class="btn cond" id="tdo_colorSave">C'est parti</button>
   </div>
@@ -3066,6 +3087,8 @@ BO.link={
 <script>
 /* ===== Accueil ===== */
 {
+BO.col={im:"#FF9EC4",no:"#B9A6FF"};
+BO.people=()=>{const P={};[["im","Iman","IM"],["no","Norine","NO"]].forEach(([k,n,i])=>{P[k]={name:n,ini:i,get color(){return BO.col[k]}}});return P};
 BO.cur={fx(){const f=BO.stock&&BO.stock.fx?+BO.stock.fx():0;return f>0?f:0.94},
   chf(v,c){v=+v||0;return Math.round((c==="EUR"?v*BO.cur.fx():v)*100)/100},
   f(v,c){v=+v||0;const s=Math.abs(v).toLocaleString("fr-CH",{minimumFractionDigits:2,maximumFractionDigits:2});return(v<0?"−\u00a0":"")+(c==="EUR"?"€\u00a0":"CHF\u00a0")+s},
@@ -3076,7 +3099,7 @@ const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&
 const $=id=>document.getElementById(id);
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=26)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im",s)}${av("no",s)}</span>`:`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 let drop={num:"",name:"",date:"",time:""};
@@ -3416,7 +3439,10 @@ ROOT.addEventListener("drop",e=>{const z=e.target.closest("[data-drop]");if(!z||
 function openColor(){const taken=memberIds().filter(i=>i!==me).map(i=>members[i].color);pickColor=(members[me]&&members[me].color)||PAL.find(c=>!taken.includes(c));
   $("tdo_swatches").innerHTML=PAL.map(c=>`<button style="background:${c}" data-c="${c}" aria-label="Couleur ${c}"${taken.includes(c)?" disabled":""} class="${c===pickColor?"on":""}"></button>`).join("");$("tdo_colorModal").hidden=false}
 $("tdo_swatches").addEventListener("click",e=>{const b=e.target.closest("button[data-c]");if(!b||b.disabled)return;pickColor=b.dataset.c;$("tdo_swatches").querySelectorAll("button").forEach(x=>x.classList.toggle("on",x===b))});
-$("tdo_colorSave").addEventListener("click",()=>{if(me&&pickColor){members[me]=Object.assign({},members[me],{color:pickColor})}$("tdo_colorModal").hidden=true;render()});
+$("tdo_colorSave").addEventListener("click",()=>{if(me&&pickColor){members[me]=Object.assign({},members[me],{color:pickColor});BO.col[me]=pickColor}$("tdo_colorModal").hidden=true;render();document.dispatchEvent(new CustomEvent("bo-as",{detail:me}))});
+document.body.appendChild($("tdo_colorModal"));
+$("tdo_colorModal").addEventListener("mousedown",e=>{if(e.target===$("tdo_colorModal"))$("tdo_colorModal").hidden=true});
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("tdo_colorModal").hidden)$("tdo_colorModal").hidden=true});
 $("colorBtn").addEventListener("click",()=>{setMenu(false);openColor()});
 
 /* demo data */
@@ -3446,7 +3472,7 @@ tasks=[];notes={};comments=[];
 BO.todo={tasks:()=>tasks,add:o=>addTask(o),open:id=>{if(tasks.some(t=>t.id===id))openDetail(id)}};
 BO.link.dates("todo",()=>tasks.filter(t=>t.status!=="done"&&t.due).map(t=>({date:t.due,title:t.title,src:"To do",href:"#todo",color:(CATS.find(c=>c[0]===t.cat)||CATS[0])[2],who:t.owner,task:true,tid:t.id,del:()=>removeTask(t.id)})));
 document.addEventListener("bo-link",()=>render());
-{const ld=s=>{({tasks,members,notes,comments,names}=s);tasks=tasks||[];notes=notes||{};comments=comments||[];
+{const ld=s=>{({tasks,members,notes,comments,names}=s);members=members||{};Object.keys(members).forEach(i=>{if(members[i]&&members[i].color&&BO.col[i]!==undefined)BO.col[i]=members[i].color});tasks=tasks||[];notes=notes||{};comments=comments||[];
   if(!s.cl1){const D0=new Set(TODO_DEMO.map(t=>t.id+"|"+t.title)),QT=["Valider les prix des 12 pièces","Commander des cartes de remerciement","Répondre aux messages Instagram"];
     const gone=new Set(tasks.filter(t=>D0.has(t.id+"|"+t.title)||(QT.includes(t.title)&&t.cat==="admin")).map(t=>t.id));
     tasks=tasks.filter(t=>!gone.has(t.id));comments=comments.filter(c=>!gone.has(c.task)&&!(c.id==="c1"&&c.text===COMM_DEMO[0].text));Object.values(notes).forEach(o=>{if(o)for(const k in o)if(gone.has(k))delete o[k]})}};const s=BOS.get("todo");if(s)ld(s);BOS.on("todo",s=>{ld(s);render()})}loaded=true;route();
@@ -3474,7 +3500,7 @@ const chf=n=>n==null?"—":"CHF "+Number(n).toLocaleString("fr-CH",{minimumFract
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
 const fmt=s=>s?new Date(s+"T12:00").toLocaleDateString("fr-CH",{day:"numeric",month:"short",year:"numeric"}):"—";
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=26)=>id&&members[id]?`<span class="av" title="${esc(members[id].name)}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`:"—";
 const catOf=k=>CATS.find(c=>c[0]===k)||["","Sans catégorie","#999"];const stOf=k=>STS.find(s=>s[0]===k)||STS[0];
@@ -3687,7 +3713,7 @@ const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
 const fdl=s=>new Date(s+"T12:00").toLocaleDateString("fr-CH",{weekday:"short",day:"numeric",month:"short"});
 const fds=s=>new Date(s+"T12:00").toLocaleDateString("fr-CH",{day:"numeric",month:"short"});
 const days=(a,b)=>Math.round((new Date(b+"T12:00")-new Date(a+"T12:00"))/864e5);
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=24)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im",s)}${av("no",s)}</span>`:`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 /* supplies: quantity on hand, unit cost, supplier lead time in days */
@@ -3857,7 +3883,7 @@ const fdl=s=>s?new Date(s+"T12:00").toLocaleDateString("fr-CH",{weekday:"short",
 const nf=n=>Math.round(n).toLocaleString("fr-CH");
 const pct=n=>(Math.round(n*10)/10).toLocaleString("fr-CH")+" %";
 const chf=n=>"CHF "+Number(n||0).toLocaleString("fr-CH",{maximumFractionDigits:2});
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=24)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im",s)}${av("no",s)}</span>`:`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 /* formats: diffusion type + length */
@@ -4312,7 +4338,7 @@ const ROOT=document.getElementById("pg-agenda");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const $=id=>document.getElementById(id);
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
-const M={im:["Iman","#FF9EC4","IM"],no:["Norine","#B9A6FF","NO"]};
+const M={get im(){return["Iman",BO.col.im,"IM"]},get no(){return["Norine",BO.col.no,"NO"]}};
 const av=id=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im")}${av("no")}</span>`:M[id]?`<span class="av" title="${M[id][0]}" style="width:20px;height:20px;background:${M[id][1]}">${M[id][2]}</span>`:"";
 let off=0,sel=iso(new Date()),who="all",minor=false,REG=[],legOff=localStorage.getItem("bo_ag_leg")==="0";const hide=new Set();
 const SC={"Agenda":"#2B6CB0","To do":"#111111","Marketing":"#5B4BFF","Shooting":"#E07A00","Compta":"#2F8F5B","Packaging":"#8A5A3C","Idées":"#9A9892","Stock":"#6B6A66","Drop":"#111111"};
@@ -4394,7 +4420,7 @@ const $=id=>document.getElementById(id);
 const chf=n=>"CHF "+Number(n||0).toLocaleString("fr-CH",{minimumFractionDigits:0,maximumFractionDigits:2});
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=24)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im",s)}${av("no",s)}</span>`:`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 const CATS={hauts:["Hauts","#4E7BF2"],bas:["Bas","#1A9E8F"],jupes:["Jupes","#D6409F"],robes:["Robes","#8A5CF6"],vestes:["Vestes & manteaux","#C2681B"],chaussures:["Chaussures","#6B6F80"],accessoires:["Accessoires","#B8860B"],sacs:["Sacs","#7A5C3E"],bijoux:["Bijoux","#B8860B"]};
@@ -4409,7 +4435,7 @@ const LINES=[["achats","Achats de stock","stock",300],["port","Frais de port","s
 const SRC={stock:["Stock","#C7F0D8"],shopify:["Shopify · bientôt","#FFE3A8"],compta:["Comptabilité","#E3E6F0"],mix2:["Stock + comptabilité","#DDEFE3"]};
 let budget=Object.fromEntries(LINES.map(l=>[l[0],0]));
 const EXPS0=[{label:"Papier de soie et sacs kraft",amt:48,line:"emballage",paid:"no",date:D(-12)},{label:"Abonnement boutique en ligne (exemple)",amt:36,line:"site",paid:"im",date:D(-20)},{label:"Location studio pour le shooting",amt:80,line:"marketing",paid:"im",date:D(-7)},{label:"Étiquettes imprimées",amt:25,line:"emballage",paid:"no",date:D(-3)},{label:"Pressing veste en cuir",amt:15,line:"divers",paid:"im",date:D(-1)}];
-let mOff=0,editLine=null,editGoal=null,bcur={},gcur={};let goals={ca:0,pieces:0,achatsMax:0};
+let mOff=0,editLine=null,editGoal=null,bcur={},gcur={},manu=[];let goals={ca:0,pieces:0,achatsMax:0};
 let items=[],exps=[],extra=[];
 const isStk=e=>String(e.auto||"").startsWith("stk:");
 function pull(){const st=BO.stock&&BO.stock.items(),L=BO.ledger&&BO.ledger.all();
@@ -4432,19 +4458,23 @@ const PREV0=()=>{const pk=BOS.get("pack")||{},dr=pk.drop||{},st=BO.stock?BO.stoc
   return{pieces:+dr.pieces||0,rate:+dr.sell||70,price:pr.length?Math.round(pr.reduce((t,a)=>t+BO.cur.chf(+a.intended,a.scur),0)/pr.length):0,base:0,achats:+budget.achats||0,autres:Object.entries(budget).filter(([k])=>k!=="achats").reduce((t,[,v])=>t+(+v||0),0)}};
 function forecast(){const P=prev||(prev=PREV0()),dd=BO.home?BO.home.drop().date:"";const out=[];let cum=0;
   for(let i=1;i<=3;i++){const[y,m]=ym(i),isDrop=dd&&new Date(dd+"T12:00").getFullYear()===y&&new Date(dd+"T12:00").getMonth()===m;
-    const cv=k=>BO.cur.chf(P[k],(P.cur||{})[k]),pieces=(isDrop?Math.round(P.pieces*P.rate/100):0)+P.base,sales=pieces*cv("price"),costs=cv("achats")+cv("autres"),res=sales-costs;cum+=res;
-    out.push({lbl:new Date(y,m,1).toLocaleDateString("fr-CH",{month:"long"})+(isDrop?" · drop":""),pieces,sales,costs,res,cum})}
+    const cv=k=>BO.cur.chf(P[k],(P.cur||{})[k]),pieces=(isDrop?Math.round(P.pieces*P.rate/100):0)+P.base,mk=y+"-"+String(m+1).padStart(2,"0"),MI=manu.filter(x=>x.month===mk),mi=MI.filter(x=>x.kind==="in").reduce((t,x)=>t+BO.cur.chf(x.amt,x.cur),0),mo=MI.filter(x=>x.kind!=="in").reduce((t,x)=>t+BO.cur.chf(x.amt,x.cur),0),sales=pieces*cv("price")+mi,costs=cv("achats")+cv("autres")+mo,res=sales-costs;cum+=res;
+    out.push({lbl:new Date(y,m,1).toLocaleDateString("fr-CH",{month:"long"})+(isDrop?" · drop":""),mon:new Date(y,m,1).toLocaleDateString("fr-CH",{month:"long",year:"numeric"}),mk,mi,mo,pieces,sales,costs,res,cum})}
   const sg=n=>(n<0?"− ":"+ ")+chf(Math.abs(n)),cl=n=>n<0?"neg":"pos",mx=Math.max(1,...out.map(o=>Math.abs(o.res)));
   const H=[["pieces","Pièces dans le drop",""],["rate","Taux de vente du drop","%"],["price","Prix moyen d'une pièce","$"],["base","Ventes hors drop par mois","pièces"],["achats","Achats de stock par mois","$"],["autres","Autres dépenses par mois","$"]];
   $("bud_prev").innerHTML=`<div class="hrow"><h2 class="cond">Prévisions sur 3 mois</h2><span class="sub">Calculées depuis le drop, le stock et ton budget. Change une hypothèse, tout se recalcule.</span></div>
 <div class="bprev"><div class="bpt"><div class="bpr bph"><span></span>${out.map(o=>`<span>${o.lbl}</span>`).join("")}</div>
 <div class="bpr"><span>Ventes prévues →</span>${out.map(o=>`<span class="pos">+ ${chf(o.sales)}<small>${o.pieces} pièce${o.pieces>1?"s":""}</small></span>`).join("")}</div>
 <div class="bpr"><span>Dépenses prévues →</span>${out.map(o=>`<span class="neg">− ${chf(o.costs)}</span>`).join("")}</div>
+${out.some(o=>o.mi||o.mo)?`<div class="bpr"><span>Dont ajouts manuels →</span>${out.map(o=>`<span class="${o.mi-o.mo<0?"neg":o.mi||o.mo?"pos":""}">${o.mi||o.mo?sg(o.mi-o.mo):"—"}</span>`).join("")}</div>`:""}
 <div class="bpr big"><span>Résultat prévu →</span>${out.map(o=>`<span class="${cl(o.res)}">${sg(o.res)}</span>`).join("")}</div>
 <div class="bpr"><span>Cumul →</span>${out.map(o=>`<span class="${cl(o.cum)}">${sg(o.cum)}</span>`).join("")}</div>
 <div class="bpr bars"><span></span>${out.map(o=>`<span><i style="height:${Math.max(4,Math.abs(o.res)/mx*100)}%;background:${o.res<0?"#C8102E":"#1F8A4C"}"></i></span>`).join("")}</div></div>
-<div class="bph2"><span class="cond" style="font-size:20px">Hypothèses</span>${H.map(([k,l,u])=>`<label class="bhy"><span>${l}</span><span><input type="number" min="0" step="1" data-prev="${k}" value="${P[k]}">${u==="$"?" "+BO.cur.sel("",(P.cur||{})[k],` data-prevc="${k}"`):u?` <small>${u}</small>`:""}</span></label>`).join("")}<button type="button" class="ghost" data-act="prevreset" style="margin-top:10px;min-height:36px;padding:0 14px">Reprendre les valeurs du site</button></div></div>`}
-function render(){pull();BOS.set("budget",{budget,goals,prev,bcur,gcur,cl1:true});
+<div class="bph2"><span class="cond" style="font-size:20px">Hypothèses</span>${H.map(([k,l,u])=>`<label class="bhy"><span>${l}</span><span><input type="number" min="0" step="1" data-prev="${k}" value="${P[k]}">${u==="$"?" "+BO.cur.sel("",(P.cur||{})[k],` data-prevc="${k}"`):u?` <small>${u}</small>`:""}</span></label>`).join("")}<button type="button" class="ghost" data-act="prevreset" style="margin-top:10px;min-height:36px;padding:0 14px">Reprendre les valeurs du site</button></div></div>
+<div class="bman"><div class="hrow"><h3 class="cond">Ajouter une prévision</h3><span class="sub">Un marché, une grosse vente, un achat ou une facture prévus : ils s'ajoutent au mois choisi.</span></div>
+<form id="bud_mf" class="bmf"><label><span>Mois</span><select name="m">${out.map(o=>`<option value="${o.mk}">${o.mon}</option>`).join("")}</select></label><label><span>Type</span><select name="k"><option value="in">Entrée d'argent</option><option value="out">Sortie d'argent</option></select></label><label class="bml"><span>Libellé</span><input name="l" required placeholder="Ex. Marché de Noël, achat portant…" autocomplete="off"></label><label><span>Montant</span><div class="amtc"><input name="a" type="number" min="0.01" step="0.01" required inputmode="decimal">${BO.cur.sel("c","CHF")}</div></label><button class="btn cond">Ajouter</button></form>
+${(()=>{const keys=new Set(out.map(o=>o.mk)),L=manu.slice().sort((a,b)=>a.month.localeCompare(b.month)||(a.at||0)-(b.at||0));return L.length?`<div class="scroll"><table class="tb bmt"><thead><tr><th>Mois</th><th>Prévision</th><th class="n">Montant</th><th></th></tr></thead><tbody>${L.map(x=>`<tr class="${keys.has(x.month)?"":"past"}"><td>${new Date(x.month+"-15").toLocaleDateString("fr-CH",{month:"long",year:"numeric"})}${keys.has(x.month)?"":' <span class="sub">· hors des 3 mois</span>'}</td><td>${esc(x.label)}</td><td class="n ${x.kind==="in"?"pos":"neg"}">${x.kind==="in"?"+ ":"− "}${BO.cur.f(x.amt,x.cur)}${x.cur==="EUR"?`<span class="fxs">≈ ${chf(BO.cur.chf(x.amt,"EUR"))}</span>`:""}</td><td><button type="button" class="x2" data-act="mdel" data-id="${x.id}" aria-label="Supprimer ${esc(x.label)}">×</button></td></tr>`).join("")}</tbody></table></div>`:'<p class="sub" style="margin:8px 0 0">Aucune prévision ajoutée pour l\'instant.</p>'})()}</div>`}
+function render(){pull();BOS.set("budget",{budget,goals,prev,bcur,gcur,manu,cl1:true});
   const mainB=ROOT.querySelector("main");mainB.classList.toggle("bprevon",btab==="prev");$("bud_prev").hidden=btab!=="prev";ROOT.querySelectorAll('#bud_tabs [data-t]').forEach(b=>b.classList.toggle("on",b.dataset.t===btab));if(btab==="prev"){forecast();return}
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
@@ -4500,14 +4530,16 @@ const setMenu=o=>window.BO.setMenu(o);
 ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
   if(a==="as"){me=b.dataset.p;render()}else if(a==="mo"){mOff=Math.min(0,mOff+ +b.dataset.d);render()}
   else if(a==="editb"){editLine=b.dataset.k;render()}else if(a==="editg"){editGoal=b.dataset.g;render()}
-  else if(a==="btab"){btab=b.dataset.t;render()}else if(a==="prevreset"){prev=null;render()}});
-ROOT.addEventListener("change",e=>{const el=e.target;if(el.id==="bud_bc"){saveB();return}if(el.id==="bud_gc"){saveG();return}if(el.dataset.prevc){prev=prev||PREV0();prev.cur=Object.assign({},prev.cur,{[el.dataset.prevc]:el.value});BOS.set("budget",{budget,goals,prev,bcur,gcur,cl1:true});forecast();return}if(el.dataset.prev){prev=prev||PREV0();prev[el.dataset.prev]=Math.max(0,+el.value||0);BOS.set("budget",{budget,goals,prev,bcur,gcur,cl1:true});forecast()}});
+  else if(a==="btab"){btab=b.dataset.t;render()}else if(a==="prevreset"){prev=null;render()}
+  else if(a==="mdel"){manu=manu.filter(x=>x.id!==b.dataset.id);render()}});
+ROOT.addEventListener("submit",e=>{const f=e.target;if(f.id!=="bud_mf")return;e.preventDefault();const g=n=>f.elements[n].value,a=Math.round(Math.abs(+g("a"))*100)/100,l=g("l").trim();if(!a||!l)return;manu.push({id:"m"+Date.now().toString(36),at:Date.now(),month:g("m"),kind:g("k")==="in"?"in":"out",label:l,amt:a,cur:g("c")==="EUR"?"EUR":"CHF"});render()});
+ROOT.addEventListener("change",e=>{const el=e.target;if(el.id==="bud_bc"){saveB();return}if(el.id==="bud_gc"){saveG();return}if(el.dataset.prevc){prev=prev||PREV0();prev.cur=Object.assign({},prev.cur,{[el.dataset.prevc]:el.value});BOS.set("budget",{budget,goals,prev,bcur,gcur,manu,cl1:true});forecast();return}if(el.dataset.prev){prev=prev||PREV0();prev[el.dataset.prev]=Math.max(0,+el.value||0);BOS.set("budget",{budget,goals,prev,bcur,gcur,manu,cl1:true});forecast()}});
 const saveB=()=>{const el=$("bud_bi");if(!el)return;const k=el.dataset.k,v=Math.max(0,+el.value||0),c=($("bud_bc")||{}).value;budget[k]=BO.cur.chf(v,c);if(c==="EUR")bcur[k]={c,v};else delete bcur[k];editLine=null;render()};
 const saveG=()=>{const el=$("bud_gi");if(!el)return;const k=el.dataset.g,v=Math.max(0,+el.value||0),c=($("bud_gc")||{}).value;goals[k]=k==="pieces"?v:BO.cur.chf(v,c);if(c==="EUR"&&k!=="pieces")gcur[k]={c,v};else delete gcur[k];editGoal=null;render()};
 ROOT.addEventListener("focusout",e=>{const id=e.target.id,to=e.relatedTarget&&e.relatedTarget.id;if((id==="bud_bi"||id==="bud_bc")&&to!=="bud_bi"&&to!=="bud_bc")saveB();if((id==="bud_gi"||id==="bud_gc")&&to!=="bud_gi"&&to!=="bud_gc")saveG()});
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if((e.target.id==="bud_bi"||e.target.id==="bud_gi")&&e.key==="Enter"){e.preventDefault();e.target.blur()}if(e.key==="Escape"){setMenu(false);if(editLine||editGoal){editLine=null;editGoal=null;render()}}});
 document.addEventListener("bo-ledger",render);document.addEventListener("bo-link",render);
-{const ld=s=>{({budget,goals}=s);prev=s.prev||null;bcur=s.bcur||{};gcur=s.gcur||{};
+{const ld=s=>{({budget,goals}=s);prev=s.prev||null;bcur=s.bcur||{};gcur=s.gcur||{};manu=Array.isArray(s.manu)?s.manu:[];
   if(!s.cl1){const B0=Object.fromEntries(LINES.map(l=>[l[0],l[3]]));if(budget&&LINES.every(l=>+budget[l[0]]===B0[l[0]]))budget=Object.fromEntries(LINES.map(l=>[l[0],0]));if(goals&&goals.ca===300&&goals.pieces===6&&goals.achatsMax===300)goals={ca:0,pieces:0,achatsMax:0};if(prev&&prev.pieces===12&&prev.base===3)prev=null}};const s=BOS.get("budget");if(s)ld(s);BOS.on("budget",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
@@ -4524,7 +4556,7 @@ const chf=n=>(n<0?"− ":"")+"CHF "+Math.abs(Number(n||0)).toLocaleString("fr-CH
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
 const fd=s=>new Date(s+"T12:00").toLocaleDateString("fr-CH",{day:"2-digit",month:"2-digit",year:"numeric"});
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=24)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im",s)}${av("no",s)}</span>`:`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 const POSTES=[["vente","Ventes","in"],["apport","Apport d'une associée","in"],["achats","Achats de stock","out"],["port","Frais de port","out"],["emballage","Emballage","out"],["paiement","Frais de paiement","out"],["site","Site & abonnements","out"],["marketing","Marketing & shooting","out"],["divers","Divers","out"],["prelev","Prélèvement d'une associée","out"],["remb","Remboursement à une associée","out"],["rembin","Remboursement d'une associée à l'entreprise","in"]];
@@ -4952,7 +4984,7 @@ const $=id=>document.getElementById(id);
 const iso=d=>{const z=new Date(d.getTime()-d.getTimezoneOffset()*6e4);return z.toISOString().slice(0,10)};
 const D=n=>{const d=new Date();d.setDate(d.getDate()+n);return iso(d)};
 const fds=s=>s?new Date(s+"T12:00").toLocaleDateString("fr-CH",{day:"numeric",month:"short"}):"";
-const members={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"}};Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
+const members=BO.people();Object.defineProperty(members,"both",{value:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N"},enumerable:false});
 let me="im";
 const av=(id,s=24)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("im",s)}${av("no",s)}</span>`:`<span class="av" title="${members[id].name}" style="width:${s}px;height:${s}px;background:${members[id].color}">${members[id].ini}</span>`;
 const hl=(id,t)=>`<span style="background:linear-gradient(transparent 30%,${members[id].color} 30%,${members[id].color} 94%,transparent 94%);padding:0 4px">${esc(t)}</span>`;
@@ -5154,7 +5186,7 @@ const APP=$("app"),NAV=$("cpg_links");
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const uid=p=>p+Math.random().toString(36).slice(2,9);
 const clone=o=>JSON.parse(JSON.stringify(o));
-const PEOPLE={im:{name:"Iman",color:"#FF9EC4",ini:"IM"},no:{name:"Norine",color:"#B9A6FF",ini:"NO"},both:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N",pair:1}};
+const PEOPLE={im:{name:"Iman",get color(){return BO.col.im},ini:"IM"},no:{name:"Norine",get color(){return BO.col.no},ini:"NO"},both:{name:"Iman et Norine",color:"#DCA2E2",ini:"I+N",pair:1}};
 let me="im";document.addEventListener("bo-as",e=>{if(PEOPLE[e.detail]&&e.detail!=="both")me=e.detail});
 const chf=n=>"CHF "+(+n||0).toLocaleString("fr-CH",{maximumFractionDigits:2});
 const num=n=>new Intl.NumberFormat("fr-CH",{maximumFractionDigits:2}).format(+n||0);
