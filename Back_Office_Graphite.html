@@ -2263,6 +2263,44 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
 :is(#pg-agenda,#pg-todo,#pg-stock,#pg-packaging,#pg-marketing,#pg-budget,#pg-compta,#pg-idees,#pg-bureau,.cpg)>main>.panel:first-child :is(input,select,textarea){color:#111}
 #pg-stock>main>.panel:first-child{background-position:center 65%!important}
 #pg-packaging>main>.panel:first-child{background-position:center 80%!important}
+/* ---------- packaging : seuil d'alerte + décompte ---------- */
+#pg-packaging .livedot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--pink);margin-right:6px;vertical-align:middle;animation:pkgpulse 1.6s ease-in-out infinite}
+@keyframes pkgpulse{50%{opacity:.25}}
+#pg-packaging .cdwn{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px}
+#pg-packaging .cdc{border:1.5px solid #111;padding:14px;display:flex;flex-direction:column;gap:10px;background:var(--card)}
+#pg-packaging .cdc.lv-now{background:var(--pinkT)}
+#pg-packaging .cdh{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+#pg-packaging .cdn{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+#pg-packaging .cdn .big{font-family:var(--fm);font-size:56px;line-height:1;letter-spacing:-.05em}
+#pg-packaging .cdbar{position:relative;height:10px;background:var(--soft2,#E3E1D9)}
+#pg-packaging .cdbar i{position:absolute;inset:0 auto 0 0;width:var(--p);background:#111}
+#pg-packaging .cdc.lv-now .cdbar i,#pg-packaging .cdc.lv-low .cdbar i,#pg-packaging .cdc.lv-soon .cdbar i{background:var(--pink)}
+#pg-packaging .cdbar b{position:absolute;top:-4px;bottom:-4px;left:50%;width:2px;background:#B42318}
+#pg-packaging .cdm{display:flex;flex-direction:column;gap:2px;font-size:14px}
+#pg-packaging .cdc .ghost{align-self:flex-start}
+#pg-packaging .seuilt{display:block;font-size:12px;margin-top:2px}
+/* ---------- packaging : guide d'emballage ---------- */
+#pg-packaging .gkits{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 14px}
+#pg-packaging .gkits button{border:1.5px solid #111;background:none;border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer;display:inline-flex;gap:8px;align-items:baseline;color:#111}
+#pg-packaging .gkits button span{font-size:12px;opacity:.6}
+#pg-packaging .gkits button.on{background:#111;color:#F2F1EC}
+#pg-packaging .gneed{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;padding:4px 0 16px;border-bottom:1px solid var(--line);margin-bottom:16px}
+#pg-packaging .gneed .gn{border:1px solid var(--line2);padding:2px 10px;border-radius:999px;font-size:13px}
+#pg-packaging .gsteps{list-style:none;margin:0 0 14px;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+#pg-packaging .gst{border:1.5px solid #111;display:flex;flex-direction:column;background:var(--card)}
+#pg-packaging .gph{position:relative;aspect-ratio:4/3;background:var(--soft,#E9E7E0);border-bottom:1.5px solid #111;overflow:hidden}
+#pg-packaging .gph img{width:100%;height:100%;object-fit:cover;display:block}
+#pg-packaging .gup{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;font-size:15px;font-weight:500;text-align:center}
+#pg-packaging .gup:hover{background:var(--pinkT)}
+#pg-packaging .gup input,#pg-packaging .gchg input{position:absolute;width:1px;height:1px;opacity:0}
+#pg-packaging .gup:focus-within,#pg-packaging .gchg:focus-within{outline:2px solid #111;outline-offset:-4px}
+#pg-packaging .gchg{position:absolute;left:8px;bottom:8px;background:#111;color:#F2F1EC;border-radius:999px;padding:4px 12px;font-size:13px;cursor:pointer}
+#pg-packaging .gx{position:absolute;right:8px;top:8px;width:30px;height:30px;border-radius:50%;border:0;background:#111;color:#F2F1EC;cursor:pointer;font-size:16px;line-height:1}
+#pg-packaging .gtx{padding:12px;display:flex;flex-direction:column;gap:8px;flex:1}
+#pg-packaging .gnum{font-family:var(--fm);font-size:28px;line-height:1;color:#111}
+#pg-packaging .gtx textarea{border:1px solid var(--line);background:transparent;font:inherit;font-size:15px;padding:8px;resize:vertical;min-height:70px;color:#111}
+#pg-packaging .gctl{display:flex;gap:4px;margin-top:auto}
+#pg-packaging .gctl .x2:disabled{opacity:.3;cursor:default}
 #pg-marketing>main>.panel:first-child{background-position:40% 25%!important}
 #pg-idees>main>.panel:first-child{background-position:55% 15%!important}
 #pg-agenda>main>.panel:first-child{background-position:50% 30%!important}
@@ -2885,6 +2923,7 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
   </section>
   <div class="tabs2" id="pkg_ptabs" role="tablist"></div>
   <div id="pkg_pvue">
+  <section class="panel" id="pkg_cdwn" hidden></section>
   <div class="kpis" id="pkg_kpis"></div>
   <div class="two">
     <section class="panel"><div class="hrow"><h2 class="cond" id="pkg_alT">Alertes</h2><span class="sub">Calculées chaque jour</span></div><div id="pkg_alerts"></div></section>
@@ -2902,10 +2941,11 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
     <section class="panel"><div class="hrow"><h2 class="cond">Types de colis</h2><button class="ghost sm" data-act="ptab" data-t="types">Gérer les types</button></div><div id="pkg_kits"></div>
       <div class="hrow" style="margin-top:18px"><h2 class="cond">Notifications</h2></div>
       <div class="notif"><label><input type="checkbox" checked> Dans l'application</label><label><input type="checkbox" checked> Par e-mail à Iman et Norine</label><label><input type="checkbox"> Tâche automatique dans la To do</label></div>
-      <p class="sub" style="margin:8px 0 0">Dans la vraie version, une alerte « Commander bientôt » arrive au plus tard à la date limite de commande.</p></section>
+      <p class="sub" style="margin:8px 0 0">Une alerte « Seuil atteint » arrive dès qu'une fourniture passe sous son seuil, bien avant la date limite de commande. Le décompte en haut de la page suit le stock en direct.</p></section>
   </div>
   </div>
   <div id="pkg_ptypes" hidden></div>
+  <div id="pkg_pguide" hidden></div>
 
 <div class="modal" id="pkg_dlg" hidden></div>
 </main>
@@ -3768,16 +3808,19 @@ function forecast(s){
   const orderBy=empty==null?null:empty-s.lead-safety;
   const need30=Math.ceil(daily*30+(dd>=0&&dd<=30?dropParcels*per:0));
   const sugg=Math.max(0,Math.ceil((need30-s.qty+per*5)/ (s.unit==="rouleau"?1:10))*(s.unit==="rouleau"?1:10));
-  return{per,daily,empty,orderBy,dropNeed:dropParcels*per,need30,sugg,beforeDrop:empty!=null&&dd>=0&&empty<=dd+0}
+  const r={per,daily,empty,orderBy,dropNeed:dropParcels*per,need30,sugg,beforeDrop:empty!=null&&dd>=0&&empty<=dd+0};const sv=seuilOf(s,r);r.seuil=sv.n;r.seuilAuto=sv.auto;r.low=sv.n>0&&s.qty<=sv.n;r.near=sv.n>0&&s.qty<=sv.n*2;r.left=per?Math.floor(s.qty/per+1e-9):null;return r
 }
-function level(f){if(f.orderBy==null)return"ok";if(f.orderBy<=0)return"now";if(f.orderBy<=7)return"soon";return"ok"}
-const LV={now:["Commander maintenant","#FFD3CE","#B42318"],soon:["À commander bientôt","#FFE3A8","#8A5A00"],ok:["OK","#C7F0D8","#1E7A4C"]};
+/* seuil d'alerte : choisi à la main, sinon de quoi tenir le délai fournisseur + la marge + deux semaines, pour être prévenues bien avant la date de commande */
+function seuilOf(s,f){if(s.min!=null&&s.min!==""&&!isNaN(+s.min))return{n:Math.max(0,+s.min),auto:false};f=f||forecast(s);if(!f.per)return{n:0,auto:true};const n=Math.max(f.per*5,f.daily*((+s.lead||0)+safety+14));return{n:s.unit==="rouleau"?Math.ceil(n*2)/2:Math.ceil(n),auto:true}}
+function level(f){if(f.orderBy!=null&&f.orderBy<=0)return"now";if(f.orderBy!=null&&f.orderBy<=7)return"soon";if(f.low)return"low";return"ok"}
+const LV={now:["Commander maintenant","#FFD3CE","#B42318"],soon:["À commander bientôt","#FFE3A8","#8A5A00"],low:["Seuil atteint","#FFF0C7","#8A5A00"],ok:["OK","#C7F0D8","#1E7A4C"]};
+const ut=(s,q)=>s.unit+(q>1?(s.unit==="rouleau"?"x":"s"):"");
 const qfmt=(s,v)=>s.unit==="rouleau"?(Math.round(v*10)/10).toLocaleString("fr-CH"):Math.round(v).toLocaleString("fr-CH");
 function render(){if(BO.home){const hd=BO.home.drop();drop.date=hd.date;drop.name=hd.name}BOS.set("pack",{SUP,KITS,HIST,drop,safety,PUR,STYPES,cl1:true});BO.link.changed("pkg");
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
-  const F=SUP.map(s=>[s,forecast(s)]);const al=F.filter(([s,f])=>level(f)!=="ok").sort((a,b)=>a[1].orderBy-b[1].orderBy);
+  const F=SUP.map(s=>[s,forecast(s)]);const al=F.filter(([s,f])=>level(f)!=="ok").sort((a,b)=>(a[1].orderBy??999)-(b[1].orderBy??999));
   const cost=h=>Object.entries(h.used).reduce((t,[k,q])=>t+q*ucOf(SUP.find(s=>s.id===k)),0);
   const month=HIST.filter(h=>new Date(h.date).getMonth()===new Date().getMonth());
   $("pkg_kpis").innerHTML=`<div class="kpi"><span class="cond t">Alertes</span><span class="n" style="${al.length?"color:#B42318":""}">${al.length}</span><span class="sub">${al.filter(a=>level(a[1])==="now").length} à commander maintenant</span></div>
@@ -3785,8 +3828,10 @@ function render(){if(BO.home){const hd=BO.home.drop();drop.date=hd.date;drop.nam
 <div class="kpi"><span class="cond t">Colis ce mois</span><span class="n">${month.length}</span><span class="sub">${chf(month.reduce((t,h)=>t+cost(h),0))} de fournitures utilisées</span></div>
 <div class="kpi"><span class="cond t">Valeur des fournitures</span><span class="n">${chf(SUP.reduce((t,s)=>t+s.qty*ucOf(s),0))}</span><span class="sub">En stock aujourd'hui</span></div>`;
   $("pkg_alT").innerHTML=`Alertes <span class="badge">${al.length}</span>`;
+  const Z=F.filter(([s,f])=>f.near||level(f)!=="ok").sort((a,b)=>(a[1].empty??999)-(b[1].empty??999)||a[0].qty/(a[1].seuil||1)-b[0].qty/(b[1].seuil||1));$("pkg_cdwn").hidden=!Z.length;
+  $("pkg_cdwn").innerHTML=Z.length?`<div class="hrow"><h2 class="cond">Décompte avant rupture</h2><span class="sub"><span class="livedot" aria-hidden="true"></span>En direct · mis à jour à chaque colis enregistré</span></div><div class="cdwn">${Z.map(([s,f])=>{const lv=level(f),l=LV[lv],pct=Math.max(0,Math.min(100,s.qty/((f.seuil||1)*2)*100));return`<div class="cdc lv-${lv}"><div class="cdh"><strong>${esc(s.name)}</strong><span class="chip" style="background:${l[1]};color:${l[2]}">${lv==="ok"?"Bientôt au seuil":l[0]}</span></div><div class="cdn"><span class="big">${qfmt(s,s.qty)}</span><span>${ut(s,s.qty)} en stock</span></div><div class="cdbar" style="--p:${pct}%" role="img" aria-label="${qfmt(s,s.qty)} en stock pour un seuil de ${qfmt(s,f.seuil)}"><i></i><b></b></div><div class="cdm"><span>Seuil d'alerte : <strong>${qfmt(s,f.seuil)}</strong>${f.seuilAuto?" (calculé)":""}</span>${f.left!=null?`<span>Encore ≈ <strong>${f.left} colis</strong> possibles</span>`:""}<span>${f.empty==null?"Pas de rupture prévue dans les 4 mois":f.empty===0?"<strong>Épuisé</strong>":`Épuisé dans <strong>${f.empty} jour${f.empty>1?"s":""}</strong> (${fds(D(f.empty))})`}</span>${f.orderBy!=null?`<span>${f.orderBy<=0?"Commander <strong>aujourd'hui</strong>":`Commander avant le <strong>${fds(D(f.orderBy))}</strong>`}</span>`:""}</div><button class="ghost sm" data-act="recv" data-id="${s.id}">+ Réception</button></div>`}).join("")}</div>`:"";
   $("pkg_alerts").innerHTML=al.length?al.map(([s,f])=>{const l=LV[level(f)];const ob=f.orderBy<=0?"aujourd'hui":fdl(D(f.orderBy));return`<div class="al" style="border-color:${l[2]}"><div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>${esc(s.name)}</strong><span class="chip" style="background:${l[1]};color:${l[2]}">${l[0]}</span></div>
-<span>Commander <strong>${f.orderBy<=0?"aujourd'hui":"avant le "+ob}</strong> · il en reste ${qfmt(s,s.qty)}, ${f.empty===0?"déjà épuisé":`épuisé vers le ${fdl(D(f.empty))}`}${f.beforeDrop?` <span style="color:#B42318">avant le ${esc(drop.name)}</span>`:""}.</span>
+${level(f)==="low"?`<span>Il en reste <strong>${qfmt(s,s.qty)}</strong>, sous le seuil de ${qfmt(s,f.seuil)}${f.left!=null?` · encore ≈ ${f.left} colis possibles`:""}${f.orderBy!=null?` · à commander avant le ${ob}`:""}</span>`:""}<span${level(f)==="low"?" hidden":""}>Commander <strong>${f.orderBy<=0?"aujourd'hui":"avant le "+ob}</strong> · il en reste ${qfmt(s,s.qty)}, ${f.empty===0?"déjà épuisé":`épuisé vers le ${fdl(D(f.empty))}`}${f.beforeDrop?` <span style="color:#B42318">avant le ${esc(drop.name)}</span>`:""}</span>
 <span class="sub">Délai fournisseur ${s.lead} jours + marge ${safety} jours · ${esc(s.supplier)} · quantité conseillée : ${f.sugg} ${s.unit}${f.sugg>1?"s":""}</span>
 <span style="display:flex;gap:8px;margin-top:4px"><button class="ghost" data-act="recv" data-id="${s.id}">Marquer comme commandé / reçu</button></span></div>`}).join(""):'<p class="sub" style="margin:0">Tout est en ordre jusqu\'au prochain drop.</p>';
   const dd=days(iso(new Date()),drop.date),dp=Math.round(drop.pieces*drop.sell/100);
@@ -3797,13 +3842,13 @@ function render(){if(BO.home){const hd=BO.home.drop();drop.date=hd.date;drop.nam
 ${toShip().length?`<p style="margin:12px 0 0;display:flex;align-items:center;gap:14px;flex-wrap:wrap"><span class="cond" style="font-size:32px">${toShip().length} colis à expédier</span><button class="btn" data-act="parcel">Préparer un colis</button></p>`:'<p class="sub" style="margin:12px 0 0">Aucun colis à expédier.</p>'}`;
   $("pkg_safety").innerHTML=[2,4,7,10].map(v=>`<option value="${v}"${v===safety?" selected":""}>${v} jours</option>`).join("");
   $("pkg_sup").innerHTML=`<thead><tr><th>Fourniture</th><th>En stock</th><th class="n">Par colis</th><th>Tient jusqu'au</th><th>Commander avant</th><th class="n">Délai</th><th class="n">Prix unitaire</th><th>Fournisseur</th><th></th></tr></thead><tbody>${grpRows(F,([s,f])=>{const l=LV[level(f)];const cover=f.need30?Math.min(100,s.qty/f.need30*100):100;return`<tr>
-<td style="font-weight:500"><button class="lnk" data-act="editsup" data-id="${s.id}" title="Modifier">${esc(s.name)}</button></td><td><div class="gauge"><span class="track"><span style="width:${cover}%;background:${l[2]}"></span></span><span>${qfmt(s,s.qty)} ${s.unit}${s.qty>1&&s.unit!=="rouleau"?"s":s.qty>1?"x":""}</span></div></td><td class="n">${f.per?(Math.round(f.per*10)/10).toLocaleString("fr-CH"):"—"}</td>
+<td style="font-weight:500"><button class="lnk" data-act="editsup" data-id="${s.id}" title="Modifier">${esc(s.name)}</button></td><td><div class="gauge"><span class="track"><span style="width:${cover}%;background:${l[2]}"></span></span><span>${qfmt(s,s.qty)} ${s.unit}${s.qty>1&&s.unit!=="rouleau"?"s":s.qty>1?"x":""}</span></div>${f.seuil?`<span class="sub seuilt">Seuil ${qfmt(s,f.seuil)}${f.seuilAuto?" · calculé":""}</span>`:""}</td><td class="n">${f.per?(Math.round(f.per*10)/10).toLocaleString("fr-CH"):"—"}</td>
 <td>${f.empty==null?"> 4 mois":f.empty===0?'<span style="color:#B42318">Épuisé</span>':fds(D(f.empty))}</td><td><span class="chip" style="background:${l[1]};color:${l[2]}">${f.orderBy==null?"Rien à prévoir":f.orderBy<=0?"Aujourd'hui":fds(D(f.orderBy))}</span></td>
 <td class="n">${s.lead} j</td><td class="n">${BO.cur.f(s.cost,s.cur)}</td><td>${esc(s.supplier)}</td><td style="white-space:nowrap"><button class="ghost sm" data-act="recv" data-id="${s.id}">+ Réception</button><button class="x2" data-act="supdel" data-id="${s.id}" aria-label="Supprimer ${esc(s.name)}">×</button></td></tr>`})}</tbody>`;
   $("pkg_hcount").textContent=`${HIST.length} colis · 60 derniers jours`;
   $("pkg_hist").innerHTML=`<thead><tr><th>Date</th><th>Article</th><th>Par</th><th>Type</th><th class="n">Coût</th><th></th></tr></thead><tbody>${HIST.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(h=>`<tr><td>${fds(h.date)}</td><td>${esc(h.item)}</td><td>${av(h.by,22)}</td><td><span class="sub">${esc(KITS[h.kit]?KITS[h.kit][0]:h.kname||"Sur mesure")}</span></td><td class="n">${chf(cost(h))}</td><td><button class="x2" data-act="hdel" data-id="${h.id}" aria-label="Supprimer ce colis (les fournitures reviennent en stock)" title="Supprimer · les fournitures reviennent en stock">×</button></td></tr>`).join("")}</tbody>`;
-  $("pkg_ptabs").innerHTML=[["vue","Vue d'ensemble"],["types","Types de colis"]].map(t=>`<button role="tab" class="${ptab===t[0]?"on":""}" aria-selected="${ptab===t[0]}" data-act="ptab" data-t="${t[0]}">${t[1]}</button>`).join("");
-  $("pkg_pvue").hidden=ptab!=="vue";$("pkg_ptypes").hidden=ptab!=="types";
+  $("pkg_ptabs").innerHTML=[["vue","Vue d'ensemble"],["types","Types de colis"],["guide","Guide d'emballage"]].map(t=>`<button role="tab" class="${ptab===t[0]?"on":""}" aria-selected="${ptab===t[0]}" data-act="ptab" data-t="${t[0]}">${t[1]}</button>`).join("");
+  $("pkg_pvue").hidden=ptab!=="vue";$("pkg_ptypes").hidden=ptab!=="types";$("pkg_pguide").hidden=ptab!=="guide";if(ptab==="guide"&&!gBusy())$("pkg_pguide").innerHTML=guideHtml();
   if(ptab==="types")$("pkg_ptypes").innerHTML=typesHtml(cost);
   $("pkg_kits").innerHTML=Object.entries(KITS).map(([k,[n,u]])=>`<div class="kit"><strong>${esc(n)}</strong><span class="sub">${Object.entries(u).map(([id,q])=>{const s=SUP.find(x=>x.id===id);return`${s?qfmt(s,q)+" "+esc(s.name.toLowerCase()):""}`}).join(" · ")}</span><span class="sub">≈ ${chf(kitCost(u))} par colis</span></div>`).join("")||'<p class="sub">Aucun type de colis.</p>';
 }
@@ -3825,7 +3870,7 @@ function parcelDlg(item,kit){
   const draw=()=>{const tot=Object.entries(dlgItem.used).reduce((t,[id,q])=>t+q*ucOf(SUP.find(s=>s.id===id)),0);
     $("pkg_dlg").innerHTML=`<form class="dlg small" id="pkg_pF" role="dialog" aria-modal="true" aria-labelledby="pkg_pT"><div class="top"><span id="pkg_pT" class="cond" style="font-size:28px">Enregistrer un colis</span><button type="button" class="close" data-act="closedlg" aria-label="Fermer">X</button></div>
 <div class="fields"><label class="full"><span>Article envoyé</span><input name="item" required value="${esc(item||"")}" list="pkg_itl" placeholder="N° ou nom de l'article"><datalist id="pkg_itl">${toShip().concat(onSale().map(o=>[o[0],o[1]])).map(t=>`<option value="${esc(t[0]+" "+t[1])}">`).join("")}</datalist></label>
-<div class="full"><span class="sub">Type de colis</span><div class="kitpick">${Object.entries(KITS).map(([k,[n]])=>`<button type="button" class="${dlgItem.kit===k?"on":""}" data-act="kit" data-k="${k}">${esc(n)}</button>`).join("")}</div></div>
+<div class="full"><span class="sub">Type de colis</span><div class="kitpick">${Object.entries(KITS).map(([k,[n]])=>`<button type="button" class="${dlgItem.kit===k?"on":""}" data-act="kit" data-k="${k}">${esc(n)}</button>`).join("")}</div><button type="button" class="lnk" data-act="gopen" style="margin-top:6px">Voir le guide d'emballage de ce colis →</button></div>
 <div class="full"><span class="sub">Coche ce que tu as utilisé et indique la quantité</span><div class="steps">${SUP.map(s=>{const q=dlgItem.used[s.id]||0,step=s.unit==="rouleau"?0.05:1;return`<div class="stp ${q?"on":""}"><label class="use"><input type="checkbox" data-use="${s.id}"${q?" checked":""}>${esc(s.name)}</label><span class="qin"><input type="number" data-uq="${s.id}" min="0" step="${step}" inputmode="decimal" value="${q||""}"${q?"":" disabled"} aria-label="Quantité de ${esc(s.name)}"><span class="sub">${esc(s.unit)}</span></span></div>`}).join("")}</div></div>
 <label class="full chk"><input type="checkbox" name="ship" checked> Passer l'article en « Expédié » dans le Stock</label></div>
 <div class="foot"><span>Coût des fournitures : <strong id="pkg_tot">${chf(tot)}</strong></span><button class="btn cond">Enregistrer le colis</button></div></form>`;
@@ -3839,16 +3884,46 @@ function recvDlg(id){const s=SUP.find(x=>x.id===id),f=forecast(s);
 <div class="foot"><span class="sub">En stock après réception : <span id="pkg_rAfter">${qfmt(s,s.qty+(f.sugg||10))}</span></span><button class="btn cond">Ajouter au stock</button></div></form>`;
   $("pkg_dlg").hidden=false;const fm=$("pkg_rF");fm.q.addEventListener("input",()=>$("pkg_rAfter").textContent=qfmt(s,s.qty+(+fm.q.value||0)));fm.q.focus();
   fm.addEventListener("submit",ev=>{ev.preventDefault();const qn=+fm.q.value||0,cn=+fm.c.value||s.cost;const cu=fm.elements.cur.value==="EUR"?"EUR":"";if(qn>0)PUR.push({id:"r"+Date.now(),date:iso(new Date()),sup:s.id,name:s.name,q:qn,c:cn,cur:cu,by:me,supplier:s.supplier});s.qty+=qn;s.cost=cn;s.cur=cu;$("pkg_dlg").hidden=true;render()})}
+/* ===== guide d'emballage : étapes avec photo par type de colis ===== */
+const G0={petit:["Plier l'article proprement, l'étiquette Candid bien visible.","Envelopper dans 2 feuilles de papier de soie et fermer avec 1 sticker logo.","Poser la carte de remerciement sur le dessus.","Fermer le petit carton avec le scotch et coller l'étiquette d'envoi bien à plat."],
+moyen:["Plier l'article en trois, sans marquer de pli au milieu.","Envelopper dans 3 feuilles de papier de soie et fermer avec 2 stickers logo.","Poser la carte de remerciement sur le dessus.","Fermer le carton moyen et coller l'étiquette d'envoi sur le dessus."],
+chaussures:["Glisser du papier de soie froissé dans chaque chaussure pour garder la forme.","Envelopper la paire, semelles l'une contre l'autre, dans le papier de soie restant et fermer avec 1 sticker logo.","Poser la carte de remerciement sur le dessus.","Fermer le carton à chaussures et coller l'étiquette d'envoi bien à plat."]};
+let GUIDE=(BOS.get("pkgguide")||{}).GUIDE||{},gkit="petit";
+const gsteps=k=>{if(!GUIDE[k])GUIDE[k]=(G0[k]||[]).map((t,i)=>({id:"g"+k+i,t,img:""}));return GUIDE[k]};
+const saveG=()=>BOS.set("pkgguide",{GUIDE,cl1:true});
+const gBusy=()=>{const a=document.activeElement;return!!(a&&a.dataset&&a.dataset.gt!=null&&$("pkg_pguide").contains(a))};
+const gShrink=f=>new Promise(r=>{const fr=new FileReader();fr.onerror=()=>r("");fr.onload=()=>{const im=new Image();im.onerror=()=>r("");im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.72))};im.src=fr.result};fr.readAsDataURL(f)});
+function guideHtml(){const ks=Object.keys(KITS);if(!ks.length)return'<section class="panel"><p class="sub" style="margin:0">Crée d\'abord un type de colis pour écrire son guide.</p></section>';if(!ks.includes(gkit))gkit=ks[0];
+  const L=gsteps(gkit),u=KITS[gkit][1],ok=s=>typeof s==="string"&&s.startsWith("data:image/");
+  return`<section class="panel"><div class="hrow"><h2 class="cond">Guide d'emballage</h2><span class="sub">Le même geste pour chaque colis, quelle que soit celle qui emballe</span></div>
+<div class="gkits" role="tablist" aria-label="Type de colis">${ks.map(k=>`<button type="button" role="tab" aria-selected="${k===gkit}" class="${k===gkit?"on":""}" data-act="gkit" data-k="${k}">${esc(KITS[k][0])}<span>${(GUIDE[k]||G0[k]||[]).length} étapes</span></button>`).join("")}</div>
+<div class="gneed"><span class="cond">Il te faut</span>${Object.entries(u).map(([id,q])=>{const s=SUP.find(x=>x.id===id);return s?`<span class="gn">${qfmt(s,q)} × ${esc(s.name.toLowerCase())}</span>`:""}).join("")||'<span class="sub">Aucune fourniture dans ce type.</span>'}<button class="lnk" data-act="ptab" data-t="types">Modifier le contenu</button></div>
+${L.length?`<ol class="gsteps">${L.map((st,i)=>`<li class="gst"><div class="gph">${ok(st.img)?`<img src="${st.img}" alt="Photo de l'étape ${i+1}"><label class="gchg"><input type="file" accept="image/*" data-gup="${i}">Changer</label><button type="button" class="gx" data-act="gimgdel" data-i="${i}" aria-label="Retirer la photo de l'étape ${i+1}">×</button>`:`<label class="gup"><input type="file" accept="image/*" data-gup="${i}"><span>+ Ajouter une photo</span><span class="sub">Étape ${i+1}</span></label>`}</div>
+<div class="gtx"><span class="gnum">${String(i+1).padStart(2,"0")}</span><label class="sr" for="pkg_gt-${i}">Texte de l'étape ${i+1}</label><textarea id="pkg_gt-${i}" data-gt="${i}" rows="3" placeholder="Décris le geste…">${esc(st.t)}</textarea>${st.by&&members[st.by]?`<span class="sub">Modifié par ${esc(members[st.by].name)}</span>`:""}
+<span class="gctl"><button type="button" class="x2" data-act="gmvu" data-i="${i}"${i?"":" disabled"} aria-label="Monter l'étape ${i+1}">↑</button><button type="button" class="x2" data-act="gmvd" data-i="${i}"${i<L.length-1?"":" disabled"} aria-label="Descendre l'étape ${i+1}">↓</button><button type="button" class="x2" data-act="gdel" data-i="${i}" aria-label="Supprimer l'étape ${i+1}">×</button></span></div></li>`).join("")}</ol>`:'<p class="sub">Aucune étape pour ce type de colis.</p>'}
+<button type="button" class="ghost" data-act="gadd">+ Ajouter une étape</button>
+<p class="sub" style="margin:12px 0 0">Les photos sont réduites automatiquement. Le guide est partagé : ce que l'une modifie, l'autre le voit.</p></section>`}
+function gAct(a,b){if(!/^g(kit|add|del|mvu|mvd|imgdel|open)$/.test(a))return false;if(gBusy())document.activeElement.blur();
+  if(a==="gopen"){if(dlgItem&&dlgItem.kit)gkit=dlgItem.kit;$("pkg_dlg").hidden=true;ptab="guide";render();window.scrollTo(0,0);return true}
+  if(a==="gkit"){gkit=b.dataset.k;render();return true}
+  const L=gsteps(gkit),i=+b.dataset.i;
+  if(a==="gadd"){L.push({id:"g"+Date.now(),t:"",img:"",by:me});saveG();render();const t=$("pkg_pguide").querySelector(`[data-gt="${L.length-1}"]`);t&&t.focus();return true}
+  if(a==="gdel"){if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Supprimer ?";b.style.color="#B42318";b.style.fontSize="12px";b.style.width="auto";return true}L.splice(i,1);saveG();render();return true}
+  if(a==="gmvu"||a==="gmvd"){const j=a==="gmvu"?i-1:i+1;if(j<0||j>=L.length)return true;[L[i],L[j]]=[L[j],L[i]];saveG();render();const nb=$("pkg_pguide").querySelector(`[data-act="${a}"][data-i="${j}"]`);nb&&!nb.disabled&&nb.focus();return true}
+  if(a==="gimgdel"){if(L[i]){L[i].img="";L[i].by=me;saveG();render()}return true}
+  return true}
+function gPhoto(el){const f=el.files&&el.files[0];if(!f)return;const i=+el.dataset.gup,k=gkit;gShrink(f).then(d=>{if(!d||!d.startsWith("data:image/"))return;const L=gsteps(k);if(!L[i])return;L[i].img=d;L[i].by=me;saveG();render()})}
+BOS.on("pkgguide",g=>{if(g&&g.GUIDE){GUIDE=g.GUIDE;if(ptab==="guide"&&!gBusy())render()}});
 function newSup(eid,ty){const E=SUP.find(x=>x.id===eid),cur=E?typeOf(E):ty||"";$("pkg_dlg").innerHTML=`<form class="dlg small" id="pkg_nF" role="dialog" aria-modal="true" aria-labelledby="pkg_nT"><div class="top"><span id="pkg_nT" class="cond" style="font-size:28px">${E?"Modifier la fourniture":"Nouvelle fourniture"}</span><button type="button" class="close" data-act="closedlg" aria-label="Fermer">X</button></div>
-<div class="fields"><label class="full"><span>Nom</span><input name="n" required placeholder="Ex. ruban, sachet de lavande…" value="${E?esc(E.name):""}"></label><label class="full"><span>Type de fourniture</span><select name="t">${STYPES.map(t=>`<option value="${t[0]}"${t[0]===cur?" selected":""}>${esc(t[1])}</option>`).join("")}<option value=""${cur?"":" selected"}>Sans type</option><option value="__new">+ Nouveau type…</option></select></label><label class="full" data-nt hidden><span>Nom du nouveau type</span><input name="nt" placeholder="Ex. Rubans et décoration"></label><label><span>Quantité en stock</span><input name="q" type="number" min="0" step="any" required value="${E?E.qty:0}"></label><label><span>Prix unitaire</span><div class="amtc"><input name="c" type="number" min="0" step="0.01" value="${E?E.cost:0}">${BO.cur.sel("cur",E&&E.cur)}</div></label><label><span>Délai fournisseur (jours)</span><input name="l" type="number" min="0" value="${E?E.lead:7}"></label><label><span>Fournisseur</span><input name="s" value="${E?esc(E.supplier):""}"></label></div>
+<div class="fields"><label class="full"><span>Nom</span><input name="n" required placeholder="Ex. ruban, sachet de lavande…" value="${E?esc(E.name):""}"></label><label class="full"><span>Type de fourniture</span><select name="t">${STYPES.map(t=>`<option value="${t[0]}"${t[0]===cur?" selected":""}>${esc(t[1])}</option>`).join("")}<option value=""${cur?"":" selected"}>Sans type</option><option value="__new">+ Nouveau type…</option></select></label><label class="full" data-nt hidden><span>Nom du nouveau type</span><input name="nt" placeholder="Ex. Rubans et décoration"></label><label><span>Quantité en stock</span><input name="q" type="number" min="0" step="any" required value="${E?E.qty:0}"></label><label><span>Prix unitaire</span><div class="amtc"><input name="c" type="number" min="0" step="0.01" value="${E?E.cost:0}">${BO.cur.sel("cur",E&&E.cur)}</div></label><label><span>Délai fournisseur (jours)</span><input name="l" type="number" min="0" value="${E?E.lead:7}"></label><label><span>Seuil d'alerte${E?" ("+esc(E.unit)+"s)":""}</span><input name="m" type="number" min="0" step="any" value="${E&&E.min!=null&&E.min!==""?E.min:""}" placeholder="${E?"Calculé : "+qfmt(E,seuilOf(Object.assign({},E,{min:null})).n):"Calculé automatiquement"}"></label><label><span>Fournisseur</span><input name="s" value="${E?esc(E.supplier):""}"></label></div>
 <div class="foot"><span class="sub">Elle apparaîtra aussi dans le formulaire d'envoi.</span><button class="btn cond">${E?"Enregistrer":"Ajouter"}</button></div></form>`;$("pkg_dlg").hidden=false;const fm=$("pkg_nF");fm.n.focus();
   fm.t.addEventListener("change",()=>{const nw=fm.t.value==="__new";fm.querySelector("[data-nt]").hidden=!nw;fm.nt.required=nw;if(nw)fm.nt.focus()});
   fm.addEventListener("submit",ev=>{ev.preventDefault();let type=fm.t.value;if(type==="__new"){const nt=fm.nt.value.trim();if(!nt)return;type="t"+Date.now();STYPES.push([type,nt])}
-    const o={name:fm.n.value.trim(),type,qty:+fm.q.value||0,cost:+fm.c.value||0,cur:fm.elements.cur.value==="EUR"?"EUR":"",lead:+fm.l.value||0,supplier:fm.s.value.trim()||"—"};if(E)Object.assign(E,o);else SUP.push(Object.assign({id:"s"+Date.now(),unit:"pièce"},o));$("pkg_dlg").hidden=true;render()})}
+    const o={name:fm.n.value.trim(),type,qty:+fm.q.value||0,cost:+fm.c.value||0,cur:fm.elements.cur.value==="EUR"?"EUR":"",lead:+fm.l.value||0,supplier:fm.s.value.trim()||"—",min:fm.m.value===""?null:Math.max(0,+fm.m.value||0)};if(E)Object.assign(E,o);else SUP.push(Object.assign({id:"s"+Date.now(),unit:"pièce"},o));$("pkg_dlg").hidden=true;render()})}
 const setMenu=o=>window.BO.setMenu(o);
 
 ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
-  if(a==="as"){me=b.dataset.p;render()}else if(a==="parcel")parcelDlg(b.dataset.item,b.dataset.kit);else if(a==="closedlg")$("pkg_dlg").hidden=true;
+  if(gAct(a,b))return;if(a==="as"){me=b.dataset.p;render()}else if(a==="parcel")parcelDlg(b.dataset.item,b.dataset.kit);else if(a==="closedlg")$("pkg_dlg").hidden=true;
   else if(a==="recv")recvDlg(b.dataset.id);else if(a==="newsup")newSup(null,b.dataset.type);else if(a==="newstype")typeDlg();
   else if(a==="stdel"){if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Supprimer le type ?";b.style.color="#B42318";b.style.fontSize="12px";return}const k=b.dataset.k;SUP.forEach(s=>{if(typeOf(s)===k)s.type=""});STYPES=STYPES.filter(t=>t[0]!==k);render()}
   else if(a==="ptab"){ptab=b.dataset.t;render();window.scrollTo(0,0)}
@@ -3860,12 +3935,13 @@ ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)r
   else if(a==="trm"){delete KITS[b.dataset.k][1][b.dataset.id];render()}
   else if(a==="kit"){const it=$("pkg_pF").item.value;dlgItem.kit=b.dataset.k;dlgItem.used=Object.assign({},KITS[b.dataset.k][1]);dlgItem.draw();$("pkg_pF").item.value=it}
 });
-ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.use||el.dataset.uq){useChange(el);return}if(el.dataset.tn){KITS[el.dataset.tn][0]=el.value.trim()||KITS[el.dataset.tn][0];render();return}if(el.dataset.td){KITS[el.dataset.td][2]=el.value;return}if(el.dataset.tadd){if(el.value){KITS[el.dataset.tadd][1][el.value]=1;render()}return}if(el.id==="pkg_safety"){safety=+el.value;render()}else if(el.dataset.d){const k=el.dataset.d;drop[k]=k==="date"?el.value:Math.max(0,+el.value||0);if(k==="date"&&BO.home)BO.home.setDrop({date:el.value});render()}});
+ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.gup!=null){gPhoto(el);return}if(el.dataset.use||el.dataset.uq){useChange(el);return}if(el.dataset.tn){KITS[el.dataset.tn][0]=el.value.trim()||KITS[el.dataset.tn][0];render();return}if(el.dataset.td){KITS[el.dataset.td][2]=el.value;return}if(el.dataset.tadd){if(el.value){KITS[el.dataset.tadd][1][el.value]=1;render()}return}if(el.id==="pkg_safety"){safety=+el.value;render()}else if(el.dataset.d){const k=el.dataset.d;drop[k]=k==="date"?el.value:Math.max(0,+el.value||0);if(k==="date"&&BO.home)BO.home.setDrop({date:el.value});render()}});
 ROOT.addEventListener("submit",e=>{const f=e.target.closest('form[data-form="newtype"]');if(!f)return;e.preventDefault();const n=f.querySelector("input").value.trim();if(!n)return;const src=f.querySelector("select").value;const k="t"+Date.now();KITS[k]=[n,src&&KITS[src]?Object.assign({},KITS[src][1]):{},src&&KITS[src]?KITS[src][2]:""];render()});
+ROOT.addEventListener("input",e=>{const el=e.target;if(el.dataset.gt==null)return;const st=gsteps(gkit)[+el.dataset.gt];if(!st)return;st.t=el.value;st.by=me;saveG()});
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;if(e.key==="Escape"){$("pkg_dlg").hidden=true;setMenu(false)}});
 $("pkg_dlg").addEventListener("mousedown",e=>{if(e.target===$("pkg_dlg"))$("pkg_dlg").hidden=true});
 BO.link.money("pkg",()=>PUR.map(r=>({key:"pkg:"+r.id,date:r.date,label:`Fournitures : ${r.q} × ${r.name}${r.supplier&&r.supplier!=="—"?" · "+r.supplier:""}`,poste:"emballage",amt:-BO.cur.chf(r.q*r.c,r.cur),cur:r.cur==="EUR"?"EUR":"",orig:r.cur==="EUR"?-Math.round(r.q*r.c*100)/100:"",moyen:"Banque",by:r.by,link:"Packaging",href:"#packaging"})),key=>{PUR=PUR.filter(r=>"pkg:"+r.id!==key);render()});
-BO.link.dates("pkg",()=>SUP.map(s=>[s,forecast(s)]).filter(([s,f])=>level(f)!=="ok").map(([s,f])=>({date:f.orderBy<=0?iso(new Date()):D(f.orderBy),title:"Commander : "+s.name,src:"Packaging",href:"#packaging",color:"#C2681B",task:true})));
+BO.link.dates("pkg",()=>SUP.map(s=>[s,forecast(s)]).filter(([s,f])=>level(f)!=="ok").map(([s,f])=>({date:level(f)==="low"||f.orderBy<=0?iso(new Date()):D(f.orderBy),title:(level(f)==="low"?"Stock bas : ":"Commander : ")+s.name,src:"Packaging",href:"#packaging",color:"#C2681B",task:true})));
 let shipSig="";const sSig=()=>JSON.stringify([toShip(),onSale().length]);
 document.addEventListener("bo-link",()=>{const g=sSig();if(g!==shipSig||(BO.home&&BO.home.drop().date!==drop.date)){shipSig=g;render()}});
 {const ld=s=>{({SUP,KITS,HIST,drop,safety}=s);PUR=s.PUR||[];if(s.STYPES)STYPES=s.STYPES;HIST=HIST||[];
