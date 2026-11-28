@@ -2353,8 +2353,6 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
 #pg-accueil .cdb em{font-family:var(--fb)!important;font-size:15px!important;letter-spacing:0!important;text-transform:none!important;margin:0!important;opacity:1}
 #pg-accueil .cdb:last-child strong{color:var(--pink)}
 #pg-accueil .live{font-family:var(--fd);font-size:clamp(48px,7vw,96px)}
-#pg-accueil .dfix{font-family:var(--fb);font-size:clamp(16px,1.6vw,20px);font-weight:500;letter-spacing:.01em;opacity:.95;margin-top:2px}
-#pg-accueil .dfix:empty{display:none}
 #pg-accueil .dwhen{justify-content:center;font-size:13px}
 #pg-accueil .dwhen input{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.55);border-radius:999px;padding:0 12px}
 #pg-accueil .sub2{display:none}
@@ -2784,7 +2782,6 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
       <span class="hhi" id="hom_hi"></span>
       <span class="hk">Prochain drop</span>
       <div class="dname"><label class="sr" for="hom_dnum">Numéro du drop</label><span class="dhash">N°</span><input id="hom_dnum" class="dnum" data-d="num" placeholder="00" aria-label="Numéro du drop"><label class="sr" for="hom_dtitle">Nom du drop</label><input id="hom_dtitle" class="dtitle" data-d="name" placeholder="Nom du drop" aria-label="Nom du drop"></div>
-      <div class="dfix" id="hom_dfix"></div>
       <div class="cd" id="hom_cd" role="timer" aria-live="off"></div>
       <div class="dwhen"><label for="hom_ddate">Mise en ligne</label><input id="hom_ddate" type="date" data-d="date"><label class="sr" for="hom_dtime">Heure</label><input id="hom_dtime" type="time" data-d="time"><span class="sub2">Le nom, le numéro et la date se modifient à tout moment.</span></div>
       <div class="hpt" id="hom_pt"></div>
@@ -3108,9 +3105,9 @@ const av=(id,s=26)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("
 let drop={num:"",name:"",date:"",time:""};
 let Q=[];
 let seq=10;const save=()=>{BOS.set("home",{drop,Q,seq,cl1:true});BO.link.changed("home")};
-function tick(){const el=$("hom_cd");if(!el)return;if(!drop.date){el.innerHTML=`<span class="live">Pas de drop prévu</span>`;const fx=$("hom_dfix");if(fx)fx.textContent="";return}const target=new Date(drop.date+"T"+(drop.time||"00:00"));let s=Math.max(0,Math.floor((target-new Date())/1000));
+function tick(){const el=$("hom_cd");if(!el)return;if(!drop.date){el.innerHTML=`<span class="live">Pas de drop prévu</span>`;return}const target=new Date(drop.date+"T"+(drop.time||"00:00"));let s=Math.max(0,Math.floor((target-new Date())/1000));
   const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);s%=60;
-  const live=target<=new Date();const fx=$("hom_dfix");if(fx){const t=target.toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"});fx.textContent=t.charAt(0).toUpperCase()+t.slice(1)+(drop.time?" · "+drop.time.replace(":","h"):"")}
+  const live=target<=new Date();
   el.innerHTML=live?`<span class="live">C'est en ligne</span>`:[[d,"jours"],[h,"heures"],[m,"minutes"]].map(([v,l])=>`<span class="cdb"><strong>${String(v).padStart(2,"0")}</strong><em>${l}</em></span>`).join("")}
 function render(){save();
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
