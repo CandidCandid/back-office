@@ -2796,6 +2796,30 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
 #tdo_colorModal .swatches button:disabled{opacity:.25;cursor:not-allowed}
 #tdo_colorModal .btn{border:0;background:#111;color:#fff;border-radius:999px;min-height:46px;padding:0 22px;font:inherit;font-size:16px;cursor:pointer;align-self:flex-start}
 #tdo_colorModal .btn:hover{background:var(--pink);color:#111}
+
+#pg-accueil .cdb:last-child:not(.hot) strong{color:inherit}
+#pg-accueil .cdb.hot strong{color:var(--pink)!important}
+/* ---------- Stabilo ---------- */
+.stb{position:fixed;right:16px;bottom:16px;z-index:250;display:flex;align-items:center;gap:8px}
+body.out .stb{display:none}
+.stbbtn{width:52px;height:52px;border-radius:50%;border:1.5px solid #111;background:#FFF04D;color:#111;display:inline-flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.stbbtn[aria-pressed=true]{background:#111;color:#FFF04D}
+.stbbar{display:flex;align-items:center;gap:8px;background:#F2F1EC;border:1.5px solid #111;border-radius:999px;padding:6px 8px 6px 14px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.stbbar[hidden]{display:none}
+.stbl{font-size:13px;color:#111}
+#stbCols{display:inline-flex;gap:6px}
+.stbc{width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(0,0,0,.25);cursor:pointer;padding:0}
+.stbc.on{border:2px solid #111;box-shadow:inset 0 0 0 2px #F2F1EC}
+.stbtx{border:0;background:none;font:inherit;font-size:13px;color:#111;cursor:pointer;min-height:36px;padding:0 6px;text-decoration:underline}
+.stbdone{background:#111;color:#fff;border-radius:999px;padding:0 14px;text-decoration:none}
+body.stb-on,body.stb-on *{cursor:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='28' height='28' viewBox='0 0 24 24'><path d='M14.5 4.5l5 5L10 19H5v-5z' fill='%23FFF04D' stroke='%23111' stroke-width='1.6' stroke-linejoin='round'/></svg>") 4 22,crosshair!important}
+body.stb-on .stb,body.stb-on .stb *{cursor:pointer!important}
+.stbhov{outline:2px dashed #111!important;outline-offset:2px}
+.stbh{background-color:var(--stb)!important;background-image:none!important;box-shadow:0 0 0 3px var(--stb)!important;color:#111!important}
+.stbh *{color:#111!important}
+mark.stbm{background:var(--stb);color:#111;padding:0 1px;border-radius:2px}
+@media(max-width:600px){.stb{right:10px;bottom:10px}.stbbar{flex-wrap:wrap;max-width:calc(100vw - 80px);border-radius:16px}}
+@media print{.stb{display:none}}
 </style>
 </head>
 <body class="out">
@@ -3221,7 +3245,7 @@ let seq=10;const save=()=>{BOS.set("home",{drop,Q,seq,cl1:true});BO.link.changed
 function tick(){const el=$("hom_cd");if(!el)return;if(!drop.date){el.innerHTML=`<span class="live">Pas de drop prévu</span>`;return}const target=new Date(drop.date+"T"+(drop.time||"00:00"));let s=Math.max(0,Math.floor((target-new Date())/1000));
   const d=Math.floor(s/86400);s%=86400;const h=Math.floor(s/3600);s%=3600;const m=Math.floor(s/60);s%=60;
   const live=target<=new Date();
-  el.innerHTML=live?`<span class="live">C'est en ligne</span>`:[[d,"jours"],[h,"heures"],[m,"minutes"]].map(([v,l])=>`<span class="cdb"><strong>${String(v).padStart(2,"0")}</strong><em>${l}</em></span>`).join("")}
+  el.innerHTML=live?`<span class="live">C'est en ligne</span>`:[[d,"jours"],[h,"heures"],[m,"minutes"]].map(([v,l],i)=>`<span class="cdb${i===(d>0?0:h>0?1:2)?" hot":""}"><strong>${String(v).padStart(2,"0")}</strong><em>${l}</em></span>`).join("")}
 function render(){save();
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
   $("me").innerHTML=`${av(me,32)}<span class="cond">${members[me].name}</span>`;
@@ -3311,7 +3335,7 @@ document.addEventListener("bo-as",e=>{me=e.detail;render()});
 {
 const ROOT=document.getElementById("pg-todo");
 
-const CATS=[["site","Site web","#4E7BF2"],["marketing","Marketing & réseaux","#D6409F"],["stock","Stock & shooting","#1A9E8F"],["commandes","Commandes & SAV","#C2681B"],["admin","Admin & compta","#6B6F80"],["idees","Idées","#8A5CF6"]];
+const CATS=[["general","Général","#111111"],["site","Site web","#4E7BF2"],["marketing","Marketing & réseaux","#D6409F"],["stock","Stock & shooting","#1A9E8F"],["commandes","Commandes & SAV","#C2681B"],["admin","Admin & compta","#6B6F80"],["idees","Idées","#8A5CF6"]];
 const ST={todo:["À faire","var(--todo)"],doing:["En cours","var(--doing)"],stuck:["Bloqué","var(--stuck)"],done:["Fait","var(--done)"]};
 const PR={high:["Haute","var(--hi)","#fff"],mid:["Moyenne","var(--mid)","#151515"],low:["Basse","var(--low)","#151515"],"":["—","#fff","#5B5B62"]};
 const PAL=["#FF45B5","#C6FF3D","#7FD1FF","#FFB27A","#B9A6FF","#FFE066","#9FE3D2","#F4A3A3"];
@@ -3336,7 +3360,7 @@ function visible(){const s=q.toLowerCase();return tasks.filter(t=>(fPerson==="al
 function weekAgo(){const d=new Date();d.setDate(d.getDate()-7);return d.getTime()}
 
 function parseQuick(txt){
-  let t=" "+txt+" ",cat="site",owner=me,prio="",due="";
+  let t=" "+txt+" ",cat="general",owner=me,prio="",due="";
   const m=t.match(/\s#([\wéèà&-]+)/i);if(m){const k=m[1].toLowerCase();const c=CATS.find(c=>c[0].startsWith(k.slice(0,4))||c[1].toLowerCase().startsWith(k));if(c)cat=c[0];t=t.replace(m[0]," ")}
   const a=t.match(/\s@([a-zà-ü]{1,20})/i);if(a){const k=a[1].toLowerCase();const id=/^(deux|both|nous|tous|toutes|in)$/.test(k)?"both":memberIds().find(i=>ini(i).toLowerCase()===k||(names[i]||"").toLowerCase().startsWith(k));if(id)owner=id;t=t.replace(a[0]," ")}
   if(/\s!(\s|$)/.test(t)){prio="high";t=t.replace(/\s!(?=\s|$)/," ")}
@@ -3487,7 +3511,7 @@ function render(){
 }
 async function loadNamesUnused(){const ids=[...new Set([...memberIds(),...tasks.map(t=>t.owner),...tasks.map(t=>t.doneBy),...comments.map(c=>c.by),me].filter(Boolean))].filter(i=>!names[i]);if(!ids.length||!user)return;try{const ps=await user.profiles(ids);ids.forEach(i=>{names[i]=(ps&&ps[i]&&ps[i].name)||"Quelqu'un"});render()}catch(e){}}
 
-let quickCat="site";
+let quickCat="general";
 function catUI(){const c=CATS.find(x=>x[0]===quickCat);$("tdo_catBtn").innerHTML=`<span class="dot" style="background:${c[2]}"></span>${esc(c[1])} <span aria-hidden="true">▾</span>`;
   $("tdo_catPanel").innerHTML='<div class="lbl">Catégorie de la tâche</div>'+CATS.map(([k,l,col])=>`<button type="button" role="option" data-cat="${k}" aria-selected="${k===quickCat}"><span class="dot" style="background:${col}"></span>${esc(l)}</button>`).join("")}
 const setCatPanel=o=>{$("tdo_catPanel").hidden=!o;$("tdo_catBtn").setAttribute("aria-expanded",o);if(o){const b=$("tdo_catPanel").querySelector('[aria-selected="true"]');b&&b.focus()}};
@@ -5765,6 +5789,38 @@ document.addEventListener("keydown",e=>{
   if(e.key==="/"&&!typing&&pal.hidden){e.preventDefault();open()}
 });
 if(/Mac|iP/.test(navigator.platform))document.querySelectorAll(".modk").forEach(k=>k.textContent="⌘");
+}
+</script>
+<div id="stb" class="stb"><div class="stbbar" id="stbBar" hidden role="toolbar" aria-label="Stabilo"><span class="stbl">Stabilo</span><span id="stbCols"></span><button type="button" class="stbtx" id="stbClear">Tout effacer</button><button type="button" class="stbtx stbdone" id="stbDone">Terminer</button></div><button type="button" class="stbbtn" id="stbBtn" aria-pressed="false" aria-label="Stabilo : surligner des éléments de la page" title="Stabilo"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="M14.5 4.5l5 5L10 19H5v-5z"/><path d="M12 7l5 5"/><path d="M3 21h8"/></svg></button></div>
+<script>
+/* ===== Stabilo : surlignage temporaire, effacé quand on change de page ===== */
+{
+const $=id=>document.getElementById(id),bar=$("stbBar"),btn=$("stbBtn");
+const COLS=[["#FFF04D","Jaune"],["#FF8FD2","Rose"],["#86F2A4","Vert"],["#8ED6FF","Bleu"]];
+let on=false,col=COLS[0][0],hov=null,justMarked=false;
+const PICK="td,th,.agcell,.agp,.prow,.kpi,.bk,.card,.pill,article,li,.line,.mo,.bbar,.costr,.nrow,.erow,.agr,tr";
+const own=el=>el.closest("#stb");
+const target=t=>{if(!(t instanceof Element)||own(t))return null;let el=t.closest(PICK)||t;if(el.matches("main,body,html,.page,#app,section.panel")&&el!==t)el=t;const r=el.getBoundingClientRect();if(el.matches("main,body,html,.page,#app")||r.width*r.height>innerWidth*innerHeight*.6)return null;return el};
+function drawCols(){$("stbCols").innerHTML=COLS.map(([c,n])=>`<button type="button" class="stbc${c===col?" on":""}" data-c="${c}" style="background:${c}" aria-label="${n}" aria-pressed="${c===col}"></button>`).join("")}
+function setOn(v){on=v;document.body.classList.toggle("stb-on",on);bar.hidden=!on;btn.setAttribute("aria-pressed",on);if(on)drawCols();else if(hov){hov.classList.remove("stbhov");hov=null}}
+const unwrap=m=>{const p=m.parentNode;if(!p)return;while(m.firstChild)p.insertBefore(m.firstChild,m);p.removeChild(m);p.normalize()};
+function clear(){document.querySelectorAll(".stbh").forEach(el=>{el.classList.remove("stbh");el.style.removeProperty("--stb")});document.querySelectorAll("mark.stbm").forEach(unwrap)}
+function markRange(r){const root=r.commonAncestorContainer.nodeType===1?r.commonAncestorContainer:r.commonAncestorContainer.parentNode;if(!root||own(root)||root.closest("input,textarea,select"))return false;
+  const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT),L=[];let n;while((n=w.nextNode()))if(r.intersectsNode(n)&&n.nodeValue.trim())L.push(n);
+  const sc=r.startContainer,so=r.startOffset,ec=r.endContainer,eo=r.endOffset;let done=false;
+  L.forEach(t=>{const s=t===sc?so:0,e=t===ec?eo:t.nodeValue.length;if(e<=s)return;const mid=t.splitText(s);mid.splitText(e-s);const m=document.createElement("mark");m.className="stbm";m.style.setProperty("--stb",col);mid.parentNode.insertBefore(m,mid);m.appendChild(mid);done=true});return done}
+btn.addEventListener("click",()=>setOn(!on));
+$("stbDone").addEventListener("click",()=>setOn(false));
+$("stbClear").addEventListener("click",clear);
+$("stbCols").addEventListener("click",e=>{const b=e.target.closest("[data-c]");if(b){col=b.dataset.c;drawCols()}});
+document.addEventListener("mouseup",e=>{if(!on||own(e.target))return;const s=getSelection();if(!s||s.isCollapsed||!s.rangeCount)return;if(markRange(s.getRangeAt(0))){justMarked=true;s.removeAllRanges()}},true);
+document.addEventListener("click",e=>{if(!on||own(e.target))return;e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();if(justMarked){justMarked=false;return}
+  const mk=e.target.closest("mark.stbm");if(mk){unwrap(mk);return}
+  const el=target(e.target);if(!el)return;if(el.classList.contains("stbh")&&el.style.getPropertyValue("--stb")===col){el.classList.remove("stbh");el.style.removeProperty("--stb")}else{el.classList.add("stbh");el.style.setProperty("--stb",col)}},true);
+["mousedown","pointerdown","dblclick","submit","change"].forEach(t=>document.addEventListener(t,e=>{if(on&&!own(e.target)&&t!=="mousedown"&&t!=="pointerdown"){e.preventDefault();e.stopPropagation()}},true));
+document.addEventListener("mouseover",e=>{if(!on)return;const el=target(e.target);if(el===hov)return;if(hov)hov.classList.remove("stbhov");hov=el;if(el)el.classList.add("stbhov")});
+document.addEventListener("keydown",e=>{if(on&&e.key==="Escape"){e.stopPropagation();setOn(false)}},true);
+addEventListener("hashchange",()=>{clear();setOn(false)});
 }
 </script>
 </body>
