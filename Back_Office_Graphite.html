@@ -2841,7 +2841,7 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
   <button type="button" class="kbtn" id="kbtn" aria-label="Ouvrir la palette de commandes"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><span>Aller à…</span><kbd><span class="modk">Ctrl</span> K</kbd></button>
   <span class="clock" id="clock"></span>
   <div class="whosw" id="whosw" role="group" aria-label="Agir en tant que"><button type="button" data-who="im" aria-pressed="true">Iman</button><button type="button" data-who="no" aria-pressed="false">Norine</button></div>
-  <div class="me" id="me" role="button" tabindex="0" title="Changer de personne" aria-label="Changer de personne (Iman / Norine)" style="cursor:pointer"></div>
+  <div class="me" id="me"></div>
   <div class="gname" id="gname"></div>
 </header>
 <nav class="menu" id="menu" aria-label="Navigation" hidden>
@@ -3178,8 +3178,8 @@ $s("finF").addEventListener("submit",async e=>{e.preventDefault();const p=$s("fi
 
 $s("logout").addEventListener("click",async()=>{BO.setMenu(false);await BOS.flush();await sb.auth.signOut();BOS.clear();history.replaceState(null,"","#accueil");location.reload()});
 window.addEventListener("hashchange",()=>{show();window.scrollTo(0,0)});
-document.addEventListener("click",e=>{const b=e.target.closest('.shellnote [data-act="as"]');if(b)document.dispatchEvent(new CustomEvent("bo-as",{detail:b.dataset.p}))});
-{let cur="im";const mix=(h,a)=>{const n=parseInt(h.slice(1),16),f=x=>Math.round(255-(255-x)*a);return`rgb(${f(n>>16)},${f(n>>8&255)},${f(n&255)})`};const theme=()=>{const c=(BO.col&&BO.col[cur])||"#FF45B5";if(!/^#[0-9a-f]{6}$/i.test(c))return;const n=parseInt(c.slice(1),16),st=document.body.style;st.setProperty("--pink",c);st.setProperty("--acc",c);st.setProperty("--pinkR",`${n>>16},${n>>8&255},${n&255}`);st.setProperty("--pinkT",mix(c,.15));st.setProperty("--pinkS",mix(c,.24));st.setProperty("--doing",mix(c,.24))};BO.theme=theme;const W=$s("whosw"),set=p=>{cur=p;theme();W.querySelectorAll("[data-who]").forEach(b=>{const on=b.dataset.who===p;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)})};document.addEventListener("bo-as",e=>{if(e.detail==="im"||e.detail==="no")set(e.detail)});W.addEventListener("click",e=>{const b=e.target.closest("[data-who]");if(b&&!guestOn)document.dispatchEvent(new CustomEvent("bo-as",{detail:b.dataset.who}))});const M=$s("me"),sw=()=>{if(!guestOn)document.dispatchEvent(new CustomEvent("bo-as",{detail:cur==="im"?"no":"im"}))};M.addEventListener("click",sw);M.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();sw()}});set("im")}
+/* la personne active est toujours celle du compte connecté : plus de bascule Iman / Norine */
+{let cur="im";const mix=(h,a)=>{const n=parseInt(h.slice(1),16),f=x=>Math.round(255-(255-x)*a);return`rgb(${f(n>>16)},${f(n>>8&255)},${f(n&255)})`};const theme=()=>{const c=(BO.col&&BO.col[cur])||"#FF45B5";if(!/^#[0-9a-f]{6}$/i.test(c))return;const n=parseInt(c.slice(1),16),st=document.body.style;st.setProperty("--pink",c);st.setProperty("--acc",c);st.setProperty("--pinkR",`${n>>16},${n>>8&255},${n&255}`);st.setProperty("--pinkT",mix(c,.15));st.setProperty("--pinkS",mix(c,.24));st.setProperty("--doing",mix(c,.24))};BO.theme=theme;const W=$s("whosw"),set=p=>{cur=p;theme();W.querySelectorAll("[data-who]").forEach(b=>{const on=b.dataset.who===p;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)})};document.addEventListener("bo-as",e=>{if(e.detail==="im"||e.detail==="no")set(e.detail)});set("im")}
 document.addEventListener("keydown",e=>{if(e.key==="Escape")BO.setMenu(false)});
 document.addEventListener("DOMContentLoaded",show);
 /* shared registry: every section publishes its dates and its money entries here */
@@ -5723,8 +5723,6 @@ const $=id=>document.getElementById(id);
 const menu=$("menu"),crumb=$("crumb"),clock=$("clock"),pal=$("cmdk"),q=$("cmdkQ"),list=$("cmdkL");
 const pages=()=>[...menu.querySelectorAll("a[data-page]")].map((a,i)=>({k:String(i+1).padStart(2,"0"),label:a.querySelector(".t").textContent.trim(),run:()=>{location.hash=a.dataset.page}}));
 const actions=[
-  {label:"Voir en tant qu'Iman",h:"équipe",run:()=>document.dispatchEvent(new CustomEvent("bo-as",{detail:"im"}))},
-  {label:"Voir en tant que Norine",h:"équipe",run:()=>document.dispatchEvent(new CustomEvent("bo-as",{detail:"no"}))},
   {label:"Changer ma couleur",h:"équipe",run:()=>$("colorBtn").click()},
   {label:"Ajouter une page",h:"pages",run:()=>BO.newPage&&BO.newPage()},
   {label:"Se déconnecter",h:"session",run:()=>$("logout").click()}
