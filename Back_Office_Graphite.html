@@ -2301,6 +2301,42 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
 #pg-packaging .gtx textarea{border:1px solid var(--line);background:transparent;font:inherit;font-size:15px;padding:8px;resize:vertical;min-height:70px;color:#111}
 #pg-packaging .gctl{display:flex;gap:4px;margin-top:auto}
 #pg-packaging .gctl .x2:disabled{opacity:.3;cursor:default}
+/* ---------- marketing : identité de marque ---------- */
+#pg-marketing .brand{display:flex;flex-direction:column;gap:16px}
+#pg-marketing .brand input:not([type=color]),#pg-marketing .brand textarea{border:1px solid var(--line);background:transparent;font:inherit;font-size:15px;padding:6px 8px;color:#111;min-height:36px;width:100%;box-sizing:border-box}
+#pg-marketing .brand textarea{resize:vertical}
+#pg-marketing .brand .upl{position:relative;cursor:pointer}
+#pg-marketing .brand .upl input{position:absolute;width:1px;height:1px;opacity:0}
+#pg-marketing .brand .upl:focus-within{outline:2px solid #111;outline-offset:2px}
+#pg-marketing .blogos{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px}
+#pg-marketing .blogo{margin:0;border:1.5px solid #111;display:flex;flex-direction:column}
+#pg-marketing .blbg{aspect-ratio:3/2;display:flex;align-items:center;justify-content:center;padding:18px;background:#fff;border-bottom:1.5px solid #111}
+#pg-marketing .blbg.dark{background:#111}
+#pg-marketing .blbg img{max-width:100%;max-height:100%;object-fit:contain}
+#pg-marketing .blogo figcaption{padding:10px;display:flex;flex-direction:column;gap:6px}
+#pg-marketing .bact{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+#pg-marketing .bact .x2{margin-left:auto}
+#pg-marketing .bcols{display:grid;grid-template-columns:repeat(auto-fill,minmax(190px,1fr));gap:14px}
+#pg-marketing .bcol{position:relative;border:1.5px solid #111;padding:0 0 10px;display:flex;flex-direction:column;gap:6px}
+#pg-marketing .bcol>input,#pg-marketing .bcol .bhex{margin:0 10px;width:calc(100% - 20px)!important}
+#pg-marketing .bsw{display:block!important;width:100%!important;align-self:stretch;box-sizing:border-box;height:92px;border-bottom:1.5px solid #111;cursor:pointer;position:relative}
+#pg-marketing .bsw input{position:absolute;inset:0;width:100%;height:100%;opacity:0;cursor:pointer}
+#pg-marketing .bsw:focus-within{outline:2px solid #111;outline-offset:-5px}
+#pg-marketing .bhex{display:flex;justify-content:space-between;align-items:center;font-size:14px}
+#pg-marketing .bhex code{font-family:var(--fm)}
+#pg-marketing .bx{position:absolute;top:6px;right:6px;background:#fff;border-radius:50%}
+#pg-marketing .bfonts{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+#pg-marketing .bfont{position:relative;border:1.5px solid #111;padding:12px;display:flex;flex-direction:column;gap:6px}
+#pg-marketing .bsample{font-size:38px;line-height:1.1;padding:6px 0 10px;border-bottom:1px solid var(--line);margin-bottom:4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding-right:30px}
+#pg-marketing .bta{display:flex;flex-direction:column;gap:4px;margin-top:6px}
+#pg-marketing .btwo{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#pg-marketing .btag{border-top:1px solid var(--line);padding:12px 0;display:flex;flex-direction:column;gap:6px}
+#pg-marketing .btag:first-of-type{border-top:0}
+#pg-marketing .btagh{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#pg-marketing .btagh input{flex:1;min-width:180px;width:auto!important;font-size:18px!important}
+#pg-marketing .btagh .bact .x2{margin-left:0}
+@media(max-width:600px){#pg-marketing .btwo{grid-template-columns:1fr}}
+#pg-marketing .cp.cs{background:var(--sc)!important;color:#111!important;outline:0}
 #pg-marketing>main>.panel:first-child{background-position:40% 25%!important}
 #pg-idees>main>.panel:first-child{background-position:55% 15%!important}
 #pg-agenda>main>.panel:first-child{background-position:50% 30%!important}
@@ -3181,7 +3217,7 @@ function collect(){const t=iso(new Date()),out=[],k={ship:[],pick:[],route:0,pre
     if(!s)return;if(x.prio==="high")s+=10;else if(x.prio==="mid")s+=3;if(isMsg)s+=8;if(x.status==="stuck")tag+=" · bloqué";
     if(isMsg&&(!x.due||late>=0))k.msg++;if(s>=80||(x.prio==="high"&&(!x.due||late>=-1)))k.urgent++;
     out.push({tid:x.id,title:x.title,src:isMsg?"Message":"To do",href:"#todo",color:isMsg?"#D6409F":"#4E7BF2",who:x.owner,score:s,tag,min:isMsg?10:x.prio==="high"?45:30})});
-  if(BO.mkt){BO.mkt.cont().filter(c=>c.status!=="publie"&&c.date&&c.date<=D(2)).forEach(c=>{const l=dd(c.date,t),prog=c.status==="programme";
+  if(BO.mkt){BO.mkt.cont().filter(c=>c.status!=="publie"&&c.date&&c.date<=D(2)).forEach(c=>{const l=dd(c.date,t),prog=c.status==="planifie"||c.status==="programme";
       if(l>=0||c.date===t)k.post.push(c);else k.postSoon++;
       out.push({title:(prog?"Vérifier le post programmé : ":"Poster : ")+c.title,src:"À poster",href:"#marketing",color:"#D6409F",who:c.owner,score:prog?(l>=0?45:25):l>0?92:l===0?88:l===-1?56:44,tag:l>0?`En retard de ${l} j`:l===0?"Aujourd'hui":l===-1?"Demain":"Après-demain",min:prog?5:25})});
     BO.mkt.shoots().filter(s=>s.status!=="fait"&&s.date>=t&&s.date<=D(7)).forEach(s=>{const l=dd(t,s.date),lateP=(s.prepL||[]).filter(p=>!p[2]&&dd(t,D(l+p[1]))<0).length;
@@ -3972,13 +4008,15 @@ const av=(id,s=24)=>id==="both"?`<span class="avp" title="Iman et Norine">${av("
 const FMT=[["reel_s","Reel court","moins de 15 s","#FF7A59"],["reel_l","Reel long","plus de 15 s","#E0457B"],["tt_s","TikTok court","moins de 15 s","#2EC4B6"],["tt_l","TikTok long","plus de 15 s","#1B8A80"],["campagne","Vidéo campagne","film de drop ou de saison","#151515"],["carrousel","Carrousel","plusieurs photos","#4E7BF2"],["post","Photo feed","une photo","#8A5CF6"],["story","Story","24 h","#F4B400"]];
 const fmtOf=k=>FMT.find(f=>f[0]===k)||FMT[6];
 const PLAT={ig:"Instagram",tt:"TikTok"};
-const STAT=[["idee","Idée","#ECECEF"],["produire","À produire","#E3E6F0"],["tournage","Shooting / tournage","#FFE3A8"],["montage","Montage / retouche","#FFD0B5"],["valider","À valider","#E5D4FF"],["programme","Programmé","#BDE3FF"],["publie","Publié","#C7F0D8"]];
+/* statuts dans l'ordre d'avancée : la couleur va du rouge (rien de fait) au vert (publié) */
+const STAT=[["na","Non avancé","#F4B6B6"],["ecriture","En écriture","#FFC9A8"],["ecrit","Écrit","#FFDFA0"],["tourne","Tourné","#FFF0A0"],["montage","En montage","#E5F2A0"],["pret","Prêt","#C6ECA8"],["planifie","Planifié","#9EE0B4"],["publie","Publié","#4FCF7C"]];
+const STAT_OLD={idee:"na",produire:"na",tournage:"tourne",valider:"pret",programme:"planifie"};
 const stOf=k=>STAT.find(s=>s[0]===k)||STAT[0];
 const CHECK=[["script","Script / idée validée"],["shoot","Images ou rushs prêts"],["music","Musique tendance"],["subs","Sous-titres"],["caption","Légende + hashtags"],["cover","Couverture"],["tag","Produits identifiés (lien boutique)"]];
 const SHOOTT=[["campagne","Campagne","#151515"],["feed","Feed","#8A5CF6"],["product","Produit","#1A9E8F"],["stock","Images d'archive","#6B6F80"]];
 const shOf=k=>SHOOTT.find(s=>s[0]===k)||SHOOTT[0];
 /* example content: published pieces carry metrics */
-let n=0;const C=(o)=>Object.assign({id:"c"+(++n),title:"",fmt:"post",plat:["ig"],status:"produire",owner:"im",date:D(3),shoot:"",piece:"",caption:"",check:{},m:null,drop:false},o);
+let n=0;const C=(o)=>Object.assign({id:"c"+(++n),title:"",fmt:"post",plat:["ig"],status:"na",owner:"im",date:D(3),shoot:"",piece:"",caption:"",check:{},m:null,drop:false},o);
 const M=(reach,views,likes,com,sh,sv,cl,ventes,fol)=>({reach,views,likes,com,sh,sv,cl,ventes,fol});
 const CONT_DEMO=[
 C({title:"Essayage jupe en soie (avant / après)",fmt:"reel_s",plat:["ig"],status:"publie",owner:"im",date:D(-38),m:M(5400,8900,410,38,52,96,61,1,22)}),
@@ -4069,7 +4107,7 @@ function chatHtml(s){
 <div class="chat" id="mkt_chatlog">${s.chat.map(m=>`<div class="msg${m.who===meW?" mine":""}">${avW(m.who,26)}<div><span class="mh2"><strong>${esc(nameOf(m.who))}</strong>${m.who===s.lead?` <span class="leadb sm">${STAR} chef d'équipe</span>`:""} <span class="sub">${esc(m.at)}</span></span><p>${esc(m.text)}</p></div></div>`).join("")||'<p class="sub">Pas encore de message.</p>'}</div>
 <form data-form="chat" class="chatf"><label class="sr" for="mkt_chatin">Message</label><input id="mkt_chatin" placeholder="Écrire à l'équipe…" autocomplete="off"><button class="btn cond">Envoyer</button></form></section>`;
 }
-const TABS=[["stats","Statistiques"],["cal","Calendrier"],["prod","Suivi"],["shoot","Production"],["idees","Idées"],["ads","Publicités Meta"]];
+const TABS=[["stats","Statistiques"],["marque","Identité de marque"],["cal","Calendrier"],["prod","Suivi"],["shoot","Production"],["idees","Idées"],["ads","Publicités Meta"]];
 const eng=m=>(m.likes+m.com+m.sh+m.sv)/Math.max(1,m.reach)*100;
 const fmtChip=k=>{const f=fmtOf(k);return`<span class="chip" style="background:${f[3]}26;border:1px solid ${f[3]}66"><span class="dot" style="background:${f[3]}"></span>${esc(f[1])}</span>`};
 const platTxt=p=>p.map(x=>`<span class="pl pl-${x}">${x==="ig"?"IG":"TT"}</span>`).join("");
@@ -4104,19 +4142,19 @@ function stats(){
 <div class="scroll"><table class="tb"><thead><tr><th>Date</th><th>Contenu</th><th>Format</th><th>Plateformes</th><th class="n">Portée</th><th class="n">Vues</th><th class="n">Engagement</th><th class="n">Enreg.</th><th class="n">Clics</th><th class="n">Ventes</th></tr></thead><tbody>${pub.slice().sort((a,b)=>b.date.localeCompare(a.date)).map(c=>`<tr class="click" data-act="openc" data-id="${c.id}" tabindex="0"><td>${fds(c.date)}</td><td style="font-weight:500">${esc(c.title)}</td><td>${fmtChip(c.fmt)}</td><td>${platTxt(c.plat)}</td><td class="n">${nf(c.m.reach)}</td><td class="n">${nf(c.m.views)}</td><td class="n" style="${eng(c.m)>=avgEng?"color:#1E7A4C;font-weight:600":""}">${pct(eng(c.m))}</td><td class="n">${nf(c.m.sv)}</td><td class="n">${nf(c.m.cl)}</td><td class="n">${c.m.ventes||"—"}</td></tr>`).join("")}</tbody></table></div></section>`;
 }
 const CALST=[["nr","Pas prêt (idée, à produire)"],["wip","En cours de planification (shooting, montage, à valider)"],["ok","Prêt (programmé)"],["pub","Publié"]];
-const calSt=c=>c.status==="publie"?"pub":c.status==="programme"?"ok":["tournage","montage","valider"].includes(c.status)?"wip":"nr";
+const calSt=c=>stOf(c.status)[0];
 function cal(){
   const base=new Date();base.setDate(1);base.setMonth(base.getMonth()+calOff);const y=base.getFullYear(),mo=base.getMonth();
   const first=(new Date(y,mo,1).getDay()+6)%7,nd=new Date(y,mo+1,0).getDate();const cells=[];for(let i=0;i<first;i++)cells.push(null);for(let d=1;d<=nd;d++)cells.push(iso(new Date(y,mo,d)));while(cells.length%7)cells.push(null);
-  const t=iso(new Date());const dropD=CONT.find(c=>c.fmt==="campagne"&&c.drop),hd=BO.home&&BO.home.drop().date,X=BO.link.events("mkt").filter(e=>!e.minor&&e.kind!=="drop");
+  const t=iso(new Date());const dropD=CONT.find(c=>c.fmt==="campagne"&&c.drop),hd=BO.home&&BO.home.drop().date,X=[];
   const xev=e=>`<a class="xev" href="${esc(e.href||"#")}" style="--c:${esc(e.color||"#6C6C68")}" draggable="false"><span class="xs">${esc(e.src)}</span><span class="xt">${esc(e.title)}</span></a>`;
   return`<section class="panel"><div class="hrow"><span class="cond" style="font-size:26px">${new Date(y,mo,1).toLocaleDateString("fr-CH",{month:"long",year:"numeric"})}</span><span style="display:flex;gap:6px"><button class="ghost" data-act="cal" data-d="-1" aria-label="Mois précédent">←</button><button class="ghost" data-act="cal" data-d="0">Aujourd'hui</button><button class="ghost" data-act="cal" data-d="1" aria-label="Mois suivant">→</button></span></div>
-<div class="legend" style="margin:0 0 10px">${CALST.map(c=>`<span><i class="st-${c[0]}"></i>${c[1]}</span>`).join("")}</div>
-<div class="scroll"><div class="mcal">${["lun.","mar.","mer.","jeu.","ven.","sam.","dim."].map(d=>`<div class="mh">${d}</div>`).join("")}${cells.map(d=>d?`<div class="md${d===t?" today":""}" data-drop="${d}"><span class="mdn">${+d.slice(8)}${(hd||(dropD&&dropD.date))===d?' <span class="dropt">DROP</span>':""}</span>${CONT.filter(c=>c.date===d).map(c=>`<button class="cp st-${calSt(c)}" draggable="true" data-drag="${c.id}" data-act="openc" data-id="${c.id}" title="${esc(stOf(c.status)[1])}"><span>${esc(c.title)}</span>${av(c.owner,18)}</button>`).join("")}${X.filter(e=>e.date===d).map(xev).join("")}</div>`:'<div class="md off"></div>').join("")}</div></div>
-<p class="sub" style="margin:10px 0 0">Glisse un contenu sur un autre jour pour le replanifier. La couleur suit le statut du contenu (modifiable dans sa fiche ou dans le Suivi). Les cartes en pointillé viennent de la To do et des autres rubriques.</p></section>`;
+<div class="legend" style="margin:0 0 10px">${STAT.map(x=>`<span><i style="background:${x[2]}"></i>${x[1]}</span>`).join("")}</div>
+<div class="scroll"><div class="mcal">${["lun.","mar.","mer.","jeu.","ven.","sam.","dim."].map(d=>`<div class="mh">${d}</div>`).join("")}${cells.map(d=>d?`<div class="md${d===t?" today":""}" data-drop="${d}"><span class="mdn">${+d.slice(8)}${(hd||(dropD&&dropD.date))===d?' <span class="dropt">DROP</span>':""}</span>${CONT.filter(c=>c.date===d).map(c=>`<button class="cp cs" style="--sc:${stOf(c.status)[2]}" draggable="true" data-drag="${c.id}" data-act="openc" data-id="${c.id}" title="${esc(stOf(c.status)[1])}"><span>${esc(c.title)}</span>${av(c.owner,18)}</button>`).join("")}${X.filter(e=>e.date===d).map(xev).join("")}</div>`:'<div class="md off"></div>').join("")}</div></div>
+<p class="sub" style="margin:10px 0 0">Calendrier des contenus à produire pour les réseaux. La couleur suit l'avancée du contenu, du rouge (non avancé) au vert (publié). Le statut se change dans la fiche du contenu ou dans le Suivi. Glisse un contenu sur un autre jour pour le replanifier.</p></section>`;
 }
 function prod(){
-  const cols=STAT.filter(s=>s[0]!=="idee");
+  const cols=STAT;
   return`<p class="sub" style="margin:0">Glisse une carte d'une colonne à l'autre. Une carte rouge est en retard sur sa date de publication.</p><div class="kan">${cols.map(s=>{const L=CONT.filter(c=>c.status===s[0]).sort((a,b)=>(s[0]==="publie"?b.date.localeCompare(a.date):a.date.localeCompare(b.date)));const show=s[0]==="publie"?L.slice(0,4):L;return`<section class="kcol" data-dropst="${s[0]}"><h2 class="cond" style="background:${s[2]}">${s[1]}<span>${L.length}</span></h2>${show.map(c=>{const done=CHECK.filter(k=>c.check[k[0]]).length,late=c.status!=="publie"&&c.date<iso(new Date());return`<button class="kc${late?" late":""}" draggable="true" data-drag="${c.id}" data-act="openc" data-id="${c.id}">${fmtChip(c.fmt)}<span style="font-weight:500;text-align:left">${esc(c.title)}</span><span class="kmeta"><span>${platTxt(c.plat)}</span><span class="${late?"latet":""}">${fdl(c.date)}</span>${av(c.owner,20)}</span>${c.status!=="publie"?`<span class="track" style="height:5px"><span style="width:${done/CHECK.length*100}%;background:#151515"></span></span><span class="sub">${done}/${CHECK.length} étapes${c.drop?" · drop":""}</span>`:""}</button>`}).join("")}${s[0]==="publie"&&L.length>4?`<span class="sub" style="padding:0 10px">+ ${L.length-4} autres dans Statistiques</span>`:""}</section>`}).join("")}</div>`;
 }
 const TO_SHOOT=[];
@@ -4136,7 +4174,7 @@ function shoots(){
     return`<div class="slot" style="--k:${k[1]}"><div class="stime"><strong>${from}</strong><span class="sub">${time}</span></div><div class="sbody"><div class="shead"><span class="chip" style="background:${k[1]}">${k[0]}</span><label class="sr" for="mkt_sl-${i}">Intitulé</label><input id="mkt_sl-${i}" class="slabel" data-slot="${i}" data-k="1" value="${esc(sl[1])}"><label class="durl"><span class="sr">Durée en minutes</span><input type="number" min="5" step="5" data-slot="${i}" data-k="2" value="${sl[2]}"> min</label><span class="sord"><button class="x2" data-act="slup" data-i="${i}" aria-label="Monter">↑</button><button class="x2" data-act="sldown" data-i="${i}" aria-label="Descendre">↓</button><button class="x2" data-act="sldel" data-i="${i}" aria-label="Supprimer le créneau">×</button></span></div>
 ${sl[0]==="look"?`<label class="pcs"><span class="lbl">Pièces</span><input data-slot="${i}" data-k="3" value="${esc(sl[3])}" placeholder="#0142 Escarpins, …"></label><div class="shots">${sl[4].map((sh,j)=>`<div class="shotr"><label class="shot"><input type="checkbox" data-sh="${i}" data-j="${j}"${sh[2]?" checked":""}> ${fmtChip(sh[1])} <span>${esc(sh[0])}</span></label><button class="x2" data-act="shrm" data-i="${i}" data-j="${j}" aria-label="Retirer le plan">×</button></div>`).join("")}<form class="addshot" data-form="pshot" data-i="${i}"><label class="sr" for="mkt_ps-${i}">Nouveau plan</label><input id="mkt_ps-${i}" placeholder="+ Plan à faire"><select aria-label="Format">${FMT.map(f=>`<option value="${f[0]}">${f[1]}</option>`).join("")}</select></form></div>`:""}</div></div>`}).join("");
   const end=endOf(s);const nShots=s.slots.reduce((t,x)=>t+x[4].length,0),okShots=s.slots.reduce((t,x)=>t+x[4].filter(y=>y[2]).length,0);
-  const linked=CONT.filter(c=>c.shoot===s.id);const need=CONT.filter(c=>["produire","tournage"].includes(c.status)&&(!c.shoot||(SHOOTS.find(x=>x.id===c.shoot)||{}).status==="fait")&&c.fmt!=="story");
+  const linked=CONT.filter(c=>c.shoot===s.id);const need=CONT.filter(c=>["na","ecriture","ecrit"].includes(c.status)&&(!c.shoot||(SHOOTS.find(x=>x.id===c.shoot)||{}).status==="fait")&&c.fmt!=="story");
   const cost=s.costs.reduce((a,c)=>a+BO.cur.chf(+c[1]||0,c[2]),0),anyE=s.costs.some(c=>c[2]==="EUR");
   const detail=`
 <section class="panel"><div class="shdr"><div style="display:flex;flex-direction:column;gap:6px;flex:1"><span style="display:flex;gap:8px;align-items:center;flex-wrap:wrap"><span class="chip" style="background:${t[2]};color:#fff">${t[1]}</span><select data-ss="status" aria-label="Statut du shooting"><option value="prep"${s.status==="prep"?" selected":""}>En préparation</option><option value="pret"${s.status==="pret"?" selected":""}>Prêt</option><option value="fait"${s.status==="fait"?" selected":""}>Fait</option></select></span><label class="sr" for="mkt_snm">Nom</label><input id="mkt_snm" class="ti" data-ss="name" value="${esc(s.name)}"></div><div class="shbtns"><button class="ghost ownonly" data-act="preview">Voir en tant que partie extérieure</button><button class="btn cond" data-act="sheet">Feuille de service · PDF</button><button class="ghost ownonly dangerb" data-act="sdel">Supprimer</button></div></div>
@@ -4170,6 +4208,47 @@ function ads(){
 <section class="panel"><div class="hrow"><h2 class="cond">Campagnes</h2><span class="sub">Meta Ads Manager</span></div><div class="scroll"><table class="tb"><thead><tr><th>Campagne</th><th>Objectif</th><th>Statut</th><th class="n">Budget</th><th class="n">Dépensé</th><th class="n">Affichages</th><th class="n">Clics</th><th class="n">Taux de clic</th><th class="n">Ventes</th><th class="n">Retour</th></tr></thead><tbody>${ADS.map(a=>`<tr><td style="font-weight:500">${esc(a.name)}</td><td>${esc(a.obj)}</td><td><span class="chip" style="background:${a.status==="Terminée"?"#ECECEF":"#BDE3FF"}">${a.status}</span></td><td class="n">${chf(a.budget)}</td><td class="n">${chf(a.spent)}</td><td class="n">${nf(a.imp)}</td><td class="n">${nf(a.clicks)}</td><td class="n">${a.imp?pct(a.clicks/a.imp*100):"—"}</td><td class="n">${a.ventes||"—"}</td><td class="n">${a.spent?(a.ca/a.spent).toFixed(1).replace(".",",")+" ×":"—"}</td></tr>`).join("")}</tbody></table></div>
 <p class="sub" style="margin:10px 0 0">Repère : un retour au-dessus de 1 × veut dire que la pub a rapporté plus qu'elle n'a coûté (avant le coût des pièces).</p></section>`;
 }
+/* ===== identité de marque : logos, couleurs, typos, ton, hashtags (clé « brand », partagée) ===== */
+const svgUrl=s=>"data:image/svg+xml;charset=utf-8,"+encodeURIComponent(s);
+const B0=()=>({logos:[{id:"l1",name:"Logo Candid",src:svgUrl(FS_WM.replace(' class="fs-wm"',"")),dark:false},{id:"l2",name:"Les deux points",src:svgUrl('<svg xmlns="http://www.w3.org/2000/svg" viewBox="146.42 177.14 549.05 241.00"><circle cx="266.92" cy="297.64" r="118.5"/><circle cx="574.97" cy="297.64" r="118.5"/></svg>'),dark:false}],
+  colors:[{id:"k1",name:"Noir",hex:"#111111",use:""},{id:"k2",name:"Papier",hex:"#F2F1EC",use:""}],
+  fonts:[{id:"f1",name:"Inter Tight",use:"Titres et textes",url:""},{id:"f2",name:"IBM Plex Mono",use:"Chiffres et étiquettes",url:""}],
+  tone:"",say:"",avoid:"",tags:[{id:"h1",name:"À mettre partout",tags:""}]});
+let BR=(BOS.get("brand")||{}).B||null;
+const saveB=()=>BOS.set("brand",{B:BR,cl1:true});
+const bBusy=()=>{const a=document.activeElement;return!!(a&&a.dataset&&a.dataset.bf!=null&&ROOT.contains(a))};
+const bset=(p,v)=>{const k=p.split(".");let o=BR;for(let i=0;i<k.length-1&&o;i++)o=o[k[i]];if(o)o[k[k.length-1]]=v};
+const bImg=s=>typeof s==="string"&&s.startsWith("data:image/");
+const bExt=s=>/svg/.test(s.slice(0,30))?".svg":/jpe?g/.test(s.slice(0,30))?".jpg":/webp/.test(s.slice(0,30))?".webp":".png";
+const readLogo=f=>new Promise(r=>{const fr=new FileReader();fr.onerror=()=>r("");fr.onload=()=>{const d=fr.result;if(/svg/.test(f.type)||d.length<700000)return r(d);const im=new Image();im.onerror=()=>r("");im.onload=()=>{const k=Math.min(1,1200/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/png"))};im.src=d};fr.readAsDataURL(f)});
+function brand(){if(!BR)BR=B0();const b=BR;["logos","colors","fonts","tags"].forEach(k=>b[k]=b[k]||[]);
+  const nTags=s=>(String(s||"").match(/#[^\s#]+/g)||[]).length;
+  return`<div class="brand">
+<p class="sub" style="margin:0">Tout ce qui fait l'image de Candid, au même endroit. Ce que l'une modifie, l'autre le voit.</p>
+<section class="panel"><div class="hrow"><h2 class="cond">Logos</h2><label class="ghost sm upl">+ Ajouter un logo<input type="file" accept="image/*,.svg" multiple data-blogo="1"></label></div>
+<div class="blogos">${b.logos.map((l,i)=>`<figure class="blogo"><div class="blbg${l.dark?" dark":""}">${bImg(l.src)?`<img src="${l.src}" alt="${esc(l.name||"Logo")}">`:""}</div><figcaption><label class="sr" for="mkt_bl-${i}">Nom du logo</label><input id="mkt_bl-${i}" data-bf="logos.${i}.name" value="${esc(l.name)}" placeholder="Nom (ex. logo principal, version blanche)"><span class="bact"><button type="button" class="lnk" data-act="bbg" data-i="${i}">${l.dark?"Fond clair":"Fond sombre"}</button>${bImg(l.src)?`<a class="lnk" href="${l.src}" download="${esc((l.name||"logo").replace(/[^\wÀ-ÿ\-]+/g,"_")+bExt(l.src))}">Télécharger</a>`:""}<button type="button" class="x2" data-act="bdel" data-k="logos" data-i="${i}" aria-label="Supprimer ${esc(l.name||"ce logo")}">×</button></span></figcaption></figure>`).join("")||'<p class="sub" style="margin:0">Aucun logo pour l\'instant.</p>'}</div></section>
+<section class="panel"><div class="hrow"><h2 class="cond">Couleurs</h2><button type="button" class="ghost sm" data-act="badd" data-k="colors">+ Couleur</button></div>
+<div class="bcols">${b.colors.map((c,i)=>{const h=String(c.hex||"#000000").toUpperCase();return`<div class="bcol"><label class="bsw" style="background:${esc(h)}"><span class="sr">Choisir la couleur ${esc(c.name)}</span><input type="color" data-bf="colors.${i}.hex" value="${esc(h.toLowerCase())}"></label><label class="sr" for="mkt_bc-${i}">Nom de la couleur</label><input id="mkt_bc-${i}" class="bcn" data-bf="colors.${i}.name" value="${esc(c.name)}" placeholder="Nom"><span class="bhex"><code>${esc(h)}</code><button type="button" class="lnk" data-act="bcopy" data-v="${esc(h)}">Copier</button></span><label class="sr" for="mkt_bu-${i}">Usage</label><input id="mkt_bu-${i}" data-bf="colors.${i}.use" value="${esc(c.use||"")}" placeholder="Usage (ex. fonds, boutons)"><button type="button" class="x2 bx" data-act="bdel" data-k="colors" data-i="${i}" aria-label="Supprimer ${esc(c.name||"cette couleur")}">×</button></div>`}).join("")||'<p class="sub" style="margin:0">Aucune couleur pour l\'instant.</p>'}</div></section>
+<section class="panel"><div class="hrow"><h2 class="cond">Typographies</h2><button type="button" class="ghost sm" data-act="badd" data-k="fonts">+ Typo</button></div>
+<div class="bfonts">${b.fonts.map((f,i)=>`<div class="bfont"><div class="bsample" style="font-family:'${esc(String(f.name||"").replace(/['"\\]/g,""))}',system-ui">Aa Bb Cc 123</div><label class="sr" for="mkt_bf-${i}">Nom de la police</label><input id="mkt_bf-${i}" data-bf="fonts.${i}.name" value="${esc(f.name)}" placeholder="Nom de la police"><label class="sr" for="mkt_bfu-${i}">Usage</label><input id="mkt_bfu-${i}" data-bf="fonts.${i}.use" value="${esc(f.use||"")}" placeholder="Usage (ex. titres, légendes)"><label class="sr" for="mkt_bfl-${i}">Lien de la police</label><input id="mkt_bfl-${i}" data-bf="fonts.${i}.url" value="${esc(f.url||"")}" placeholder="Lien pour la télécharger (facultatif)" inputmode="url">${/^https?:\/\//.test(f.url||"")?`<a class="lnk" href="${esc(f.url)}" target="_blank" rel="noopener">Ouvrir le lien →</a>`:""}<button type="button" class="x2 bx" data-act="bdel" data-k="fonts" data-i="${i}" aria-label="Supprimer ${esc(f.name||"cette typo")}">×</button></div>`).join("")||'<p class="sub" style="margin:0">Aucune typo pour l\'instant.</p>'}</div>
+<p class="sub" style="margin:10px 0 0">L'aperçu « Aa Bb Cc » s'affiche dans la bonne police si elle est installée sur l'appareil.</p></section>
+<section class="panel"><div class="hrow"><h2 class="cond">Ton</h2></div>
+<label class="bta"><span class="lbl">Notre façon de parler</span><textarea data-bf="tone" rows="3" placeholder="Ex. chaleureux et complice, on tutoie, phrases courtes, une pointe d'humour.">${esc(b.tone)}</textarea></label>
+<div class="btwo"><label class="bta"><span class="lbl">On dit</span><textarea data-bf="say" rows="4" placeholder="Ex. « pièce », « trouvaille », « seconde main »">${esc(b.say)}</textarea></label><label class="bta"><span class="lbl">On évite</span><textarea data-bf="avoid" rows="4" placeholder="Ex. « fripes », « pas cher », trop d'emojis">${esc(b.avoid)}</textarea></label></div></section>
+<section class="panel"><div class="hrow"><h2 class="cond">Hashtags</h2><button type="button" class="ghost sm" data-act="badd" data-k="tags">+ Groupe</button></div>
+${b.tags.map((g,i)=>`<div class="btag"><div class="btagh"><label class="sr" for="mkt_bt-${i}">Nom du groupe</label><input id="mkt_bt-${i}" class="cond" data-bf="tags.${i}.name" value="${esc(g.name)}" placeholder="Nom du groupe (ex. drop, vintage, Berne)"><span class="bact"><span class="sub">${nTags(g.tags)} hashtag${nTags(g.tags)>1?"s":""}</span><button type="button" class="lnk" data-act="bcopyt" data-i="${i}">Copier</button><button type="button" class="x2" data-act="bdel" data-k="tags" data-i="${i}" aria-label="Supprimer le groupe ${esc(g.name)}">×</button></span></div><label class="sr" for="mkt_btt-${i}">Hashtags du groupe</label><textarea id="mkt_btt-${i}" data-bf="tags.${i}.tags" rows="2" placeholder="#vintage #secondhand …">${esc(g.tags)}</textarea></div>`).join("")||'<p class="sub" style="margin:0">Aucun groupe pour l\'instant.</p>'}</section>
+</div>`}
+function bAct(a,b){if(!/^b(add|del|copy|copyt|bg)$/.test(a))return false;if(!BR)BR=B0();if(bBusy())document.activeElement.blur();
+  if(a==="bcopy"||a==="bcopyt"){const v=a==="bcopy"?b.dataset.v:((BR.tags[+b.dataset.i]||{}).tags||"").trim();const t=b.textContent,done=()=>{b.textContent="Copié !";setTimeout(()=>b.textContent=t,1200)};if(navigator.clipboard)navigator.clipboard.writeText(v).then(done,()=>prompt("À copier :",v));else prompt("À copier :",v);return true}
+  if(a==="badd"){const k=b.dataset.k,id="b"+Date.now();BR[k].push(k==="colors"?{id,name:"",hex:"#C9A27A",use:""}:k==="fonts"?{id,name:"",use:"",url:""}:{id,name:"",tags:""});saveB();render();const f=[...ROOT.querySelectorAll(`[data-bf^="${k}.${BR[k].length-1}."]`)].find(x=>x.type!=="color");f&&f.focus();return true}
+  if(a==="bdel"){if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Supprimer ?";b.style.color="#B42318";b.style.fontSize="12px";b.style.width="auto";return true}BR[b.dataset.k].splice(+b.dataset.i,1);saveB();render();return true}
+  if(a==="bbg"){const l=BR.logos[+b.dataset.i];if(l){l.dark=!l.dark;saveB();render()}return true}
+  return true}
+function bLogo(el){const fs=[...(el.files||[])];if(!fs.length)return;if(!BR)BR=B0();Promise.all(fs.map(readLogo)).then(ds=>{ds.forEach((d,i)=>{if(bImg(d))BR.logos.push({id:"l"+Date.now()+i,name:fs[i].name.replace(/\.[^.]+$/,""),src:d,dark:false})});saveB();render()})}
+BOS.on("brand",v=>{if(v&&v.B){BR=v.B;if(tab==="marque"&&!ROOT.hidden&&!bBusy())render()}});
+ROOT.addEventListener("input",e=>{const el=e.target;if(!el.dataset||el.dataset.bf==null||!BR)return;bset(el.dataset.bf,el.value);saveB();
+  if(el.type==="color"){const r=el.closest(".bcol"),h=el.value.toUpperCase();if(r){r.querySelector(".bsw").style.background=h;r.querySelector("code").textContent=h;r.querySelector('[data-act="bcopy"]').dataset.v=h}}
+  else if(/^fonts\.\d+\.name$/.test(el.dataset.bf)){const s=el.closest(".bfont").querySelector(".bsample");s.style.fontFamily=`'${el.value.replace(/['"\\]/g,"")}',system-ui`}});
 function render(){BOS.set("mkt",{CONT,SHOOTS,MIDEAS,ADS,n,mkc1,cl1:true});BO.link.changed("mkt");
   const mainEl=$("mkt_mtabs").closest("main");if(guest){mainEl.dataset.guest="1";tab="shoot";selS=guest.sid}else delete mainEl.dataset.guest;
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
@@ -4177,7 +4256,7 @@ function render(){BOS.set("mkt",{CONT,SHOOTS,MIDEAS,ADS,n,mkc1,cl1:true});BO.lin
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
   const late=CONT.filter(c=>c.status!=="publie"&&c.date<iso(new Date())).length,week=CONT.filter(c=>c.status!=="publie"&&c.date>=iso(new Date())&&c.date<=D(7)).length;
   $("mkt_mtabs").innerHTML=TABS.map(t=>`<button class="${tab===t[0]?"on":""}" data-act="tab" data-t="${t[0]}">${t[1]}${t[0]==="prod"&&week?` <span class="cnt">${week}</span>`:""}</button>`).join("");
-  $("mkt_mout").innerHTML=`<div class="mwrap">${{stats,cal,prod,shoot:shoots,idees:ideas,ads}[tab]()}</div>`;
+  if(!(tab==="marque"&&bBusy()))$("mkt_mout").innerHTML=`<div class="mwrap">${{stats,marque:brand,cal,prod,shoot:shoots,idees:ideas,ads}[tab]()}</div>`;
   if(openC)drawC();
 }
 function drawZ(){const s=SHOOTS.find(x=>x.id==selS),lk=s&&zoomSrc!=="mood"?s.looks[zoomSrc]:null,L=s?(zoomSrc==="mood"?s.mood:(lk?lk.photos:[])):[];if(zoomI==null||!L.length){zoomI=null;$("mkt_mdlg").hidden=true;return}
@@ -4314,7 +4393,7 @@ const setMenu=o=>window.BO.setMenu(o);
 
 let dragging=false,dragId=null;
 ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
-  if(a==="as"){me=b.dataset.p;render()}else if(a==="tab"){if(b.dataset.t==="shoot")shootHome=true;tab=b.dataset.t;render()}else if(a==="period"){period=+b.dataset.p;render()}
+  if(bAct(a,b))return;if(a==="as"){me=b.dataset.p;render()}else if(a==="tab"){if(b.dataset.t==="shoot")shootHome=true;tab=b.dataset.t;render()}else if(a==="period"){period=+b.dataset.p;render()}
   else if(a==="cal"){const d=+b.dataset.d;calOff=d?calOff+d:0;render()}
   else if(a==="openc"){if(dragging)return;openS=null;openC=b.dataset.id;drawC()}else if(a==="sel"){selS=b.dataset.id;shootHome=false;render();$("mkt_mtabs").scrollIntoView({block:"start"})}
   else if(a==="shome"){shootHome=true;render();$("mkt_mtabs").scrollIntoView({block:"start"})}
@@ -4341,7 +4420,7 @@ ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)r
   else if(a==="shrm"){SHOOTS.find(x=>x.id===selS).slots[+b.dataset.i][4].splice(+b.dataset.j,1);render()}
   else if(a==="lkdel"){SHOOTS.find(x=>x.id===selS).looks.splice(+b.dataset.i,1);render()}
   else if(a==="lkprm"){SHOOTS.find(x=>x.id===selS).looks[+b.dataset.l].photos.splice(+b.dataset.i,1);render()}
-  else if(a==="newc"){const c=C({title:"Nouveau contenu",owner:me,date:D(7),status:"produire",plat:["ig"],fmt:"reel_s"});CONT.push(c);openC=c.id;openS=null;tab=tab==="stats"?"prod":tab;render();const t=$("mkt_mcT");t&&(t.focus(),t.select())}
+  else if(a==="newc"){const c=C({title:"Nouveau contenu",owner:me,date:D(7),status:"na",plat:["ig"],fmt:"reel_s"});CONT.push(c);openC=c.id;openS=null;tab=tab==="stats"?"prod":tab;render();const t=$("mkt_mcT");t&&(t.focus(),t.select())}
   else if(a==="newshoot"){const s={id:"s"+Date.now(),name:"Nouveau shooting",type:"feed",date:D(10),start:"10:00",lieu:"",adresse:"",status:"prep",lead:me,guests:[],chat:[],looks:[{name:"Look 1",skus:[],ready:{},photos:[]}],mood:[],palette:[],direction:"",team:[["Photographe","",""],["Stylisme","",""],["Mannequin(s)","",""]],prep:{},prepL:PREP.map(p=>[p[1],p[2],0]),dur:null,slots:[["setup","Arrivée et installation",30,"",[]],["look","Look 1",45,"",[]],["other","Rangement",20,"",[]]],kit:[["Steamer",0],["Batteries chargées",0]],costs:[],photos:0,videos:0};SHOOTS.push(s);selS=s.id;tab="shoot";shootHome=false;openC=null;render();const t=$("mkt_snm");t&&(t.focus(),t.select())}
   else if(["slup","sldown","sldel"].includes(a)){const s=SHOOTS.find(x=>x.id===selS),i=+b.dataset.i;if(a==="sldel")s.slots.splice(i,1);else{const j=a==="slup"?i-1:i+1;if(j>=0&&j<s.slots.length)[s.slots[i],s.slots[j]]=[s.slots[j],s.slots[i]]}render()}
   else if(a==="addslot"){const s=SHOOTS.find(x=>x.id===selS);const k=b.dataset.k;s.slots.push([k,k==="look"?"Look "+(s.slots.filter(x=>x[0]==="look").length+1):SLOTK[k][0],k==="pause"?30:k==="look"?45:20,"",[]]);render()}
@@ -4350,10 +4429,10 @@ ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)r
   else if(a==="delcost"){const s=SHOOTS.find(x=>x.id===selS);s.costs.splice(+b.dataset.i,1);render()}
   else if(a==="mlike"){const x=MIDEAS.find(i=>i.id===b.dataset.id);x.likes=x.likes.includes(me)?x.likes.filter(l=>l!==me):[...x.likes,me];render()}
   else if(a==="mgo"){MIDEAS.find(i=>i.id===b.dataset.id).state="go";render()}
-  else if(a==="mprod"){const x=MIDEAS.find(i=>i.id===b.dataset.id);MIDEAS=MIDEAS.filter(i=>i!==x);CONT.push(C({title:x.title,fmt:x.fmt,owner:x.by,status:"produire",date:D(10),plat:x.fmt.startsWith("tt")?["tt"]:["ig"]}));tab="prod";render()}
+  else if(a==="mprod"){const x=MIDEAS.find(i=>i.id===b.dataset.id);MIDEAS=MIDEAS.filter(i=>i!==x);CONT.push(C({title:x.title,fmt:x.fmt,owner:x.by,status:"na",date:D(10),plat:x.fmt.startsWith("tt")?["tt"]:["ig"]}));tab="prod";render()}
 });
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;const r=e.target.closest&&e.target.closest('tr.click');if(r&&e.target===r&&(e.key==="Enter"||e.key===" ")){e.preventDefault();r.click()}if(zoomI!=null&&!$("mkt_mdlg").hidden&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){e.preventDefault();zoomI+=e.key==="ArrowRight"?1:-1;drawZ();return}if(e.key==="Escape"){openC=null;openS=null;zoomI=null;closeSheet();$("mkt_mdlg").hidden=true;setMenu(false)}});
-ROOT.addEventListener("change",e=>{const el=e.target;
+ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.blogo){bLogo(el);return}if(el.dataset.bf!=null)return;
   if(el.dataset.cf){const c=CONT.find(x=>x.id===openC);c[el.dataset.cf]=el.value;if(el.dataset.cf==="status"&&el.value==="publie"&&!c.m)c.m={reach:0,views:0,likes:0,com:0,sh:0,sv:0,cl:0,ventes:0,fol:0};render();return}
   if(el.dataset.plat){const c=CONT.find(x=>x.id===openC);c.plat=el.checked?[...c.plat,el.dataset.plat]:c.plat.filter(p=>p!==el.dataset.plat);render();return}
   if(el.dataset.chk){const c=CONT.find(x=>x.id===openC);c.check[el.dataset.chk]=el.checked?1:0;render();return}
@@ -4408,6 +4487,7 @@ const cleanDemo=()=>{if(mkc1)return;SHOOTS.forEach(s=>{if(/^s[1-4]$/.test(s.id)&
 cleanDemo();
 {const ld=s=>{({CONT,SHOOTS,MIDEAS,ADS,n}=s);ADS=(ADS||[]).filter(a=>!ADS_DEMO.includes(a.name));CONT=CONT||[];SHOOTS=SHOOTS||[];MIDEAS=MIDEAS||[];
   if(!s.cl1){const k=x=>x.id+"|"+(x.title||x.name),f=(L,D0)=>{const S0=new Set(D0.map(k));return L.filter(x=>!S0.has(k(x)))};CONT=f(CONT,CONT_DEMO);SHOOTS=f(SHOOTS,SHOOTS_DEMO);MIDEAS=f(MIDEAS,MIDEAS_DEMO)}
+  CONT.forEach(c=>{if(STAT_OLD[c.status])c.status=STAT_OLD[c.status]});
   mkc1=!!s.mkc1;cleanDemo()};const s=BOS.get("mkt");if(s)ld(s);BOS.on("mkt",s=>{ld(s);render()})}render();
 
 document.addEventListener("bo-as",e=>{me=e.detail;render()});
