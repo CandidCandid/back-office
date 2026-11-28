@@ -2337,6 +2337,37 @@ nav.menu .social a{color:#111;border-bottom:1px solid #111}
 #pg-marketing .btagh .bact .x2{margin-left:0}
 @media(max-width:600px){#pg-marketing .btwo{grid-template-columns:1fr}}
 #pg-marketing .cp.cs{background:var(--sc)!important;color:#111!important;outline:0}
+/* ---------- marketing : templates ---------- */
+#pg-marketing .tpl{display:flex;flex-direction:column;gap:14px}
+#pg-marketing .tpl input:not([type=file]),#pg-marketing .tpl textarea,#pg-marketing .tpl select{border:1px solid var(--line);background:transparent;font:inherit;font-size:15px;padding:6px 8px;color:#111;min-height:36px;width:100%;box-sizing:border-box}
+#pg-marketing .tpl textarea{resize:vertical}
+#pg-marketing .tchips{display:flex;flex-wrap:wrap;gap:8px}
+#pg-marketing .tchips button{border:1.5px solid #111;background:none;border-radius:999px;padding:6px 14px;font:inherit;font-size:14px;cursor:pointer;color:#111}
+#pg-marketing .tchips button span{opacity:.6;font-size:12px;margin-left:4px}
+#pg-marketing .tchips button.on{background:#111;color:#F2F1EC}
+#pg-marketing .tgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+#pg-marketing .tcard2{border:1.5px solid #111;background:var(--card);display:flex;flex-direction:column}
+#pg-marketing .tcard2.open{grid-column:1/-1;padding:16px;gap:14px}
+#pg-marketing .tthumb{aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;border-bottom:1.5px solid #111;overflow:hidden}
+#pg-marketing .tthumb img{width:100%;height:100%;object-fit:cover}
+#pg-marketing .tfi{font-family:var(--fd);font-size:26px;font-weight:600;letter-spacing:-.02em;text-align:center;padding:0 10px}
+#pg-marketing .tbody{padding:12px;display:flex;flex-direction:column;gap:6px;align-items:flex-start;flex:1}
+#pg-marketing .tbody strong{font-size:20px}
+#pg-marketing .tuse{font-size:14px;color:var(--ink2)}
+#pg-marketing .tbtns{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:auto}
+#pg-marketing .thead2{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+#pg-marketing .thead2 .tnm{flex:1;min-width:200px;width:auto!important;font-size:22px!important}
+#pg-marketing .tfields{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+#pg-marketing .tfields>label,#pg-marketing .tfields>div{display:flex;flex-direction:column;gap:4px}
+#pg-marketing .tfields .full{grid-column:1/-1}
+#pg-marketing .tex{display:flex;flex-wrap:wrap;gap:10px}
+#pg-marketing .texi{position:relative;width:120px;height:120px;border:1.5px solid #111}
+#pg-marketing .texi img{width:100%;height:100%;object-fit:cover}
+#pg-marketing .texi .x2{position:absolute;top:4px;right:4px;background:#fff;border-radius:50%}
+#pg-marketing .texadd{width:120px;height:120px;border:1.5px dashed #111;display:flex!important;align-items:center;justify-content:center;cursor:pointer;position:relative;font-weight:500}
+#pg-marketing .texadd input{position:absolute;width:1px!important;height:1px;opacity:0;min-height:0!important}
+#pg-marketing .texadd:focus-within{outline:2px solid #111;outline-offset:2px}
+@media(max-width:600px){#pg-marketing .tfields{grid-template-columns:1fr}}
 #pg-marketing>main>.panel:first-child{background-position:40% 25%!important}
 #pg-idees>main>.panel:first-child{background-position:55% 15%!important}
 #pg-agenda>main>.panel:first-child{background-position:50% 30%!important}
@@ -4107,7 +4138,7 @@ function chatHtml(s){
 <div class="chat" id="mkt_chatlog">${s.chat.map(m=>`<div class="msg${m.who===meW?" mine":""}">${avW(m.who,26)}<div><span class="mh2"><strong>${esc(nameOf(m.who))}</strong>${m.who===s.lead?` <span class="leadb sm">${STAR} chef d'équipe</span>`:""} <span class="sub">${esc(m.at)}</span></span><p>${esc(m.text)}</p></div></div>`).join("")||'<p class="sub">Pas encore de message.</p>'}</div>
 <form data-form="chat" class="chatf"><label class="sr" for="mkt_chatin">Message</label><input id="mkt_chatin" placeholder="Écrire à l'équipe…" autocomplete="off"><button class="btn cond">Envoyer</button></form></section>`;
 }
-const TABS=[["stats","Statistiques"],["marque","Identité de marque"],["cal","Calendrier"],["prod","Suivi"],["shoot","Production"],["idees","Idées"],["ads","Publicités Meta"]];
+const TABS=[["stats","Statistiques"],["marque","Identité de marque"],["tpl","Templates"],["cal","Calendrier"],["prod","Suivi"],["shoot","Production"],["idees","Idées"],["ads","Publicités Meta"]];
 const eng=m=>(m.likes+m.com+m.sh+m.sv)/Math.max(1,m.reach)*100;
 const fmtChip=k=>{const f=fmtOf(k);return`<span class="chip" style="background:${f[3]}26;border:1px solid ${f[3]}66"><span class="dot" style="background:${f[3]}"></span>${esc(f[1])}</span>`};
 const platTxt=p=>p.map(x=>`<span class="pl pl-${x}">${x==="ig"?"IG":"TT"}</span>`).join("");
@@ -4249,6 +4280,51 @@ BOS.on("brand",v=>{if(v&&v.B){BR=v.B;if(tab==="marque"&&!ROOT.hidden&&!bBusy())r
 ROOT.addEventListener("input",e=>{const el=e.target;if(!el.dataset||el.dataset.bf==null||!BR)return;bset(el.dataset.bf,el.value);saveB();
   if(el.type==="color"){const r=el.closest(".bcol"),h=el.value.toUpperCase();if(r){r.querySelector(".bsw").style.background=h;r.querySelector("code").textContent=h;r.querySelector('[data-act="bcopy"]').dataset.v=h}}
   else if(/^fonts\.\d+\.name$/.test(el.dataset.bf)){const s=el.closest(".bfont").querySelector(".bsample");s.style.fontFamily=`'${el.value.replace(/['"\\]/g,"")}',system-ui`}});
+/* ===== templates de contenus : modèles réutilisables par format (clé « mkttpl », partagée) ===== */
+const T0=()=>[
+{id:"tp1",name:"Essayage avant / après",fmt:"reel_s",dur:"10–15 s",use:"Présenter une pièce portée, avec un effet « waouh ».",structure:"Plan 1 (0–2 s) : la pièce sur cintre, texte « avant »\nPlan 2 (2–3 s) : transition (claquement de doigts ou saut)\nPlan 3 (3–10 s) : la pièce portée, mouvement lent\nPlan 4 (10–13 s) : gros plan sur un détail (étiquette, matière)\nFin : prix et « dispo sur le site »",caption:"Avant / après : [pièce]. Taille [x], [prix]. Dispo maintenant, lien en bio.",tags:"",music:"Son tendance du moment",link:"",ex:[]},
+{id:"tp2",name:"Nouveautés de la semaine",fmt:"carrousel",dur:"6–10 slides",use:"Annoncer les pièces qui arrivent.",structure:"Slide 1 : photo de couverture et titre « Nouveautés »\nSlides 2 à 8 : une pièce par slide, prix en bas\nDernière slide : date et heure de mise en ligne + logo",caption:"Les nouveautés de la semaine. Laquelle tu prends ? En ligne [date] à [heure].",tags:"",music:"",link:"",ex:[]},
+{id:"tp3",name:"Compte à rebours du drop",fmt:"story",dur:"3–4 stories",use:"Les jours avant un drop.",structure:"Story 1 : sticker compte à rebours\nStory 2 : aperçu flouté d'une pièce\nStory 3 : sondage « Tu seras là ? »\nStory 4 : rappel de l'heure de mise en ligne",caption:"",tags:"",music:"",link:"",ex:[]},
+{id:"tp4",name:"Une pièce, trois looks",fmt:"tt_s",dur:"15 s",use:"Montrer qu'une pièce se porte de plusieurs façons.",structure:"Plan 1 : la pièce seule, texte « 1 pièce, 3 looks »\nPlans 2 à 4 : un look par plan, transition au rythme du son\nFin : « Ton préféré : 1, 2 ou 3 ? »",caption:"1 pièce, 3 looks. Ton préféré : 1, 2 ou 3 ?",tags:"",music:"Son tendance du moment",link:"",ex:[]}];
+let TP=(BOS.get("mkttpl")||{}).TP||null,tplF="",openT=null;
+const saveT=()=>BOS.set("mkttpl",{TP,cl1:true});
+const tBusy=()=>{const a=document.activeElement;return!!(a&&a.dataset&&a.dataset.tf!=null&&ROOT.contains(a))};
+const tShrink=f=>new Promise(r=>{const fr=new FileReader();fr.onerror=()=>r("");fr.onload=()=>{const im=new Image();im.onerror=()=>r("");im.onload=()=>{const k=Math.min(1,900/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);r(c.toDataURL("image/jpeg",.72))};im.src=fr.result};fr.readAsDataURL(f)});
+function tEdit(t,i){return`<article class="tcard2 open"><div class="thead2"><label class="sr" for="mkt_tn">Nom du template</label><input id="mkt_tn" class="cond tnm" data-tf="${i}.name" value="${esc(t.name)}" placeholder="Nom du template"><span class="tbtns"><button type="button" class="btn" data-act="tpuse" data-i="${i}">Utiliser</button><button type="button" class="ghost sm" data-act="tpclose">Fermer</button><button type="button" class="x2" data-act="tpdel" data-i="${i}" aria-label="Supprimer ce template">×</button></span></div>
+<div class="tfields">
+<label><span class="lbl">Format</span><select data-tf="${i}.fmt">${FMT.map(f=>`<option value="${f[0]}"${f[0]===t.fmt?" selected":""}>${esc(f[1])} · ${esc(f[2])}</option>`).join("")}</select></label>
+<label><span class="lbl">Durée ou nombre de slides</span><input data-tf="${i}.dur" value="${esc(t.dur||"")}" placeholder="Ex. 15 s, 8 slides"></label>
+<label class="full"><span class="lbl">Quand l'utiliser</span><input data-tf="${i}.use" value="${esc(t.use||"")}" placeholder="Ex. pour présenter une nouvelle pièce"></label>
+<label class="full"><span class="lbl">Structure (un plan ou une slide par ligne)</span><textarea data-tf="${i}.structure" rows="6" placeholder="Plan 1 (0–2 s) : …">${esc(t.structure||"")}</textarea></label>
+<label class="full"><span class="lbl">Légende modèle</span><textarea data-tf="${i}.caption" rows="3" placeholder="Ex. [pièce], taille [x], dispo …">${esc(t.caption||"")}</textarea></label>
+<label class="full"><span class="lbl">Hashtags</span><textarea data-tf="${i}.tags" rows="2" placeholder="#vintage …">${esc(t.tags||"")}</textarea></label>
+${BR&&(BR.tags||[]).some(g=>(g.tags||"").trim())?`<label class="full"><span class="sr">Ajouter un groupe de hashtags</span><select data-taddtags="${i}"><option value="">+ Ajouter un groupe de hashtags de l'Identité de marque…</option>${BR.tags.map((g,j)=>(g.tags||"").trim()?`<option value="${j}">${esc(g.name||"Groupe "+(j+1))}</option>`:"").join("")}</select></label>`:""}
+<label><span class="lbl">Musique ou son</span><input data-tf="${i}.music" value="${esc(t.music||"")}" placeholder="Ex. son tendance du moment"></label>
+<label><span class="lbl">Lien du modèle (Canva, CapCut…)</span><input data-tf="${i}.link" value="${esc(t.link||"")}" inputmode="url" placeholder="https://…"></label>
+${/^https?:\/\//.test(t.link||"")?`<a class="lnk full" href="${esc(t.link)}" target="_blank" rel="noopener">Ouvrir le modèle →</a>`:""}
+<div class="full"><span class="lbl">Exemples (photos, captures d'écran)</span><div class="tex">${(t.ex||[]).map((d,j)=>bImg(d)?`<div class="texi"><img src="${d}" alt="Exemple ${j+1}"><button type="button" class="x2" data-act="tpexdel" data-i="${i}" data-j="${j}" aria-label="Retirer l'exemple ${j+1}">×</button></div>`:"").join("")}<label class="texadd"><input type="file" accept="image/*" multiple data-texup="${i}"><span>+ Photo</span></label></div></div>
+</div></article>`}
+function tCard(t){const i=TP.indexOf(t),f=fmtOf(t.fmt),n=String(t.structure||"").split("\n").filter(x=>x.trim()).length;if(openT===t.id)return tEdit(t,i);
+  return`<article class="tcard2"><div class="tthumb" style="background:${f[3]}22">${(t.ex||[])[0]&&bImg(t.ex[0])?`<img src="${t.ex[0]}" alt="">`:`<span class="tfi" style="color:${f[3]}">${esc(f[1])}</span>`}</div><div class="tbody">${fmtChip(t.fmt)}<strong class="cond">${esc(t.name||"Sans nom")}</strong><span class="sub">${[t.dur,n?n+" étape"+(n>1?"s":""):""].filter(Boolean).map(esc).join(" · ")}</span>${t.use?`<span class="tuse">${esc(t.use)}</span>`:""}<span class="tbtns"><button type="button" class="btn" data-act="tpuse" data-i="${i}">Utiliser</button><button type="button" class="ghost sm" data-act="tpedit" data-i="${i}">Voir / modifier</button></span></div></article>`}
+function tpls(){if(!TP)TP=T0();const fm=[...new Set(TP.map(t=>t.fmt))];if(tplF&&!fm.includes(tplF))tplF="";const L=TP.filter(t=>!tplF||t.fmt===tplF);
+  return`<div class="tpl"><div class="thead2"><p class="sub" style="margin:0;flex:1;min-width:220px">Des modèles prêts à l'emploi pour produire vite et garder le même style. « Utiliser » crée un nouveau contenu déjà rempli (structure, légende, hashtags, musique).</p><button type="button" class="btn cond" data-act="tpnew">+ Nouveau template</button></div>
+<div class="tchips" role="group" aria-label="Filtrer par format"><button type="button" class="${!tplF?"on":""}" aria-pressed="${!tplF}" data-act="tpfil" data-f="">Tous <span>${TP.length}</span></button>${fm.map(k=>`<button type="button" class="${tplF===k?"on":""}" aria-pressed="${tplF===k}" data-act="tpfil" data-f="${k}">${esc(fmtOf(k)[1])} <span>${TP.filter(t=>t.fmt===k).length}</span></button>`).join("")}</div>
+<div class="tgrid">${L.map(tCard).join("")||'<p class="sub" style="margin:0">Aucun template pour ce format.</p>'}</div></div>`}
+function tpAct(a,b){if(!/^tp(new|fil|use|edit|close|del|exdel)$/.test(a))return false;if(!TP)TP=T0();if(tBusy())document.activeElement.blur();const i=+b.dataset.i,t=TP[i];
+  if(a==="tpfil"){tplF=b.dataset.f;render();return true}
+  if(a==="tpnew"){const id="tp"+Date.now();TP.unshift({id,name:"",fmt:tplF||"reel_s",dur:"",use:"",structure:"",caption:"",tags:"",music:"",link:"",ex:[]});openT=id;saveT();render();const n=$("mkt_tn");n&&n.focus();return true}
+  if(a==="tpedit"){openT=t?t.id:null;render();const n=$("mkt_tn");n&&n.scrollIntoView({block:"center"});return true}
+  if(a==="tpclose"){openT=null;render();return true}
+  if(a==="tpdel"){if(!b.dataset.arm){b.dataset.arm=1;b.textContent="Supprimer ?";b.style.color="#B42318";b.style.fontSize="12px";b.style.width="auto";return true}TP.splice(i,1);openT=null;saveT();render();return true}
+  if(a==="tpexdel"){if(t&&t.ex){t.ex.splice(+b.dataset.j,1);saveT();render()}return true}
+  if(a==="tpuse"&&t){const c=C({title:t.name||"Nouveau contenu",fmt:t.fmt,owner:me,date:D(7),status:"na",plat:/^tt/.test(t.fmt)?["tt"]:["ig"]});Object.assign(c,{script:t.structure||"",caption:t.caption||"",tags:t.tags||"",music:t.music||"",musicUrl:""});CONT.push(c);openC=c.id;openS=null;render();const tt=$("mkt_mcT");tt&&(tt.focus(),tt.select());return true}
+  return true}
+function tChange(el){if(el.dataset.texup!=null){const i=+el.dataset.texup,fs=[...(el.files||[])];if(!fs.length||!TP[i])return true;Promise.all(fs.map(tShrink)).then(ds=>{const t=TP[i];if(!t)return;t.ex=t.ex||[];ds.forEach(d=>{if(bImg(d))t.ex.push(d)});saveT();if(tBusy())document.activeElement.blur();render()});return true}
+  if(el.dataset.taddtags!=null){const t=TP[+el.dataset.taddtags],g=BR&&BR.tags[+el.value];if(t&&g){t.tags=[(t.tags||"").trim(),(g.tags||"").trim()].filter(Boolean).join(" ");saveT();if(tBusy())document.activeElement.blur();render()}return true}
+  if(el.dataset.tf!=null){const[i,k]=el.dataset.tf.split(".");if(TP&&TP[+i]){TP[+i][k]=el.value;saveT();if(k==="fmt"){el.blur();render()}}return true}
+  return false}
+BOS.on("mkttpl",v=>{if(v&&v.TP){TP=v.TP;if(tab==="tpl"&&!ROOT.hidden&&!tBusy())render()}});
+ROOT.addEventListener("input",e=>{const el=e.target;if(!el.dataset||el.dataset.tf==null||!TP)return;const[i,k]=el.dataset.tf.split(".");if(TP[+i]&&k!=="fmt"){TP[+i][k]=el.value;saveT()}});
 function render(){BOS.set("mkt",{CONT,SHOOTS,MIDEAS,ADS,n,mkc1,cl1:true});BO.link.changed("mkt");
   const mainEl=$("mkt_mtabs").closest("main");if(guest){mainEl.dataset.guest="1";tab="shoot";selS=guest.sid}else delete mainEl.dataset.guest;
   document.querySelectorAll('[data-act="as"]').forEach(b=>{const on=b.dataset.p===me;b.style.background=on?"#151515":"#fff";b.style.color=on?"#fff":"#151515"});
@@ -4256,7 +4332,7 @@ function render(){BOS.set("mkt",{CONT,SHOOTS,MIDEAS,ADS,n,mkc1,cl1:true});BO.lin
   $("team").innerHTML=Object.keys(members).map(i=>`<span style="display:flex;align-items:center;gap:8px;font-weight:300">${av(i)}${members[i].name}</span>`).join("");
   const late=CONT.filter(c=>c.status!=="publie"&&c.date<iso(new Date())).length,week=CONT.filter(c=>c.status!=="publie"&&c.date>=iso(new Date())&&c.date<=D(7)).length;
   $("mkt_mtabs").innerHTML=TABS.map(t=>`<button class="${tab===t[0]?"on":""}" data-act="tab" data-t="${t[0]}">${t[1]}${t[0]==="prod"&&week?` <span class="cnt">${week}</span>`:""}</button>`).join("");
-  if(!(tab==="marque"&&bBusy()))$("mkt_mout").innerHTML=`<div class="mwrap">${{stats,marque:brand,cal,prod,shoot:shoots,idees:ideas,ads}[tab]()}</div>`;
+  if(!((tab==="marque"&&bBusy())||(tab==="tpl"&&tBusy())))$("mkt_mout").innerHTML=`<div class="mwrap">${{stats,marque:brand,tpl:tpls,cal,prod,shoot:shoots,idees:ideas,ads}[tab]()}</div>`;
   if(openC)drawC();
 }
 function drawZ(){const s=SHOOTS.find(x=>x.id==selS),lk=s&&zoomSrc!=="mood"?s.looks[zoomSrc]:null,L=s?(zoomSrc==="mood"?s.mood:(lk?lk.photos:[])):[];if(zoomI==null||!L.length){zoomI=null;$("mkt_mdlg").hidden=true;return}
@@ -4393,7 +4469,7 @@ const setMenu=o=>window.BO.setMenu(o);
 
 let dragging=false,dragId=null;
 ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)return;const a=b.dataset.act;
-  if(bAct(a,b))return;if(a==="as"){me=b.dataset.p;render()}else if(a==="tab"){if(b.dataset.t==="shoot")shootHome=true;tab=b.dataset.t;render()}else if(a==="period"){period=+b.dataset.p;render()}
+  if(bAct(a,b)||tpAct(a,b))return;if(a==="as"){me=b.dataset.p;render()}else if(a==="tab"){if(b.dataset.t==="shoot")shootHome=true;tab=b.dataset.t;render()}else if(a==="period"){period=+b.dataset.p;render()}
   else if(a==="cal"){const d=+b.dataset.d;calOff=d?calOff+d:0;render()}
   else if(a==="openc"){if(dragging)return;openS=null;openC=b.dataset.id;drawC()}else if(a==="sel"){selS=b.dataset.id;shootHome=false;render();$("mkt_mtabs").scrollIntoView({block:"start"})}
   else if(a==="shome"){shootHome=true;render();$("mkt_mtabs").scrollIntoView({block:"start"})}
@@ -4432,7 +4508,7 @@ ROOT.addEventListener("click",e=>{const b=e.target.closest("[data-act]");if(!b)r
   else if(a==="mprod"){const x=MIDEAS.find(i=>i.id===b.dataset.id);MIDEAS=MIDEAS.filter(i=>i!==x);CONT.push(C({title:x.title,fmt:x.fmt,owner:x.by,status:"na",date:D(10),plat:x.fmt.startsWith("tt")?["tt"]:["ig"]}));tab="prod";render()}
 });
 document.addEventListener("keydown",e=>{if(ROOT.hidden)return;const r=e.target.closest&&e.target.closest('tr.click');if(r&&e.target===r&&(e.key==="Enter"||e.key===" ")){e.preventDefault();r.click()}if(zoomI!=null&&!$("mkt_mdlg").hidden&&(e.key==="ArrowLeft"||e.key==="ArrowRight")){e.preventDefault();zoomI+=e.key==="ArrowRight"?1:-1;drawZ();return}if(e.key==="Escape"){openC=null;openS=null;zoomI=null;closeSheet();$("mkt_mdlg").hidden=true;setMenu(false)}});
-ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.blogo){bLogo(el);return}if(el.dataset.bf!=null)return;
+ROOT.addEventListener("change",e=>{const el=e.target;if(el.dataset.blogo){bLogo(el);return}if(el.dataset.bf!=null)return;if(tChange(el))return;
   if(el.dataset.cf){const c=CONT.find(x=>x.id===openC);c[el.dataset.cf]=el.value;if(el.dataset.cf==="status"&&el.value==="publie"&&!c.m)c.m={reach:0,views:0,likes:0,com:0,sh:0,sv:0,cl:0,ventes:0,fol:0};render();return}
   if(el.dataset.plat){const c=CONT.find(x=>x.id===openC);c.plat=el.checked?[...c.plat,el.dataset.plat]:c.plat.filter(p=>p!==el.dataset.plat);render();return}
   if(el.dataset.chk){const c=CONT.find(x=>x.id===openC);c.check[el.dataset.chk]=el.checked?1:0;render();return}
